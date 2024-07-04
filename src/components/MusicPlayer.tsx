@@ -50,6 +50,11 @@ export function MusicPlayer() {
         onValueChange={(val) => {
           setVolume(val[0]);
           player[0].volume = volume / 100;
+          if (volume == 0) {
+            player[0].muted = true;
+          } else {
+            player[0].muted = false;
+          }
         }}
         defaultValue={[100]}
         min={0}

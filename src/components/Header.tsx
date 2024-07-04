@@ -1,4 +1,4 @@
-import logo from "../assets/imgs/contact_info.png";
+import logo from "@/assets/imgs/contact_info.png";
 
 export function Header() {
   return (

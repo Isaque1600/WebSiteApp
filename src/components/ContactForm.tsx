@@ -81,8 +81,8 @@ export function ContactForm() {
           control={form.control}
           name="message"
           render={({ field }) => (
-            <FormItem className="w-full min-h-[256px]">
-              <FormControl>
+            <FormItem className="w-full h-[256px] max-md:h-[250px]">
+              <FormControl className="">
                 <Textarea
                   placeholder="Mensagem"
                   className="bg-slate-200 border-slate-200 text-slate-800 h-full"
