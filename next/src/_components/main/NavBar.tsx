@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { MusicPlayer } from "./MusicPlayer";
-import { NavLink } from "./NavLink";
+import { MusicPlayer } from "../MusicPlayer";
+import { NavLink } from "../NavLink";
 
 export function NavBar() {
   const location = usePathname();

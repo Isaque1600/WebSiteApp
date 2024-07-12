@@ -72,7 +72,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button className="w-fit bg-red-750 hover:bg-red-800" type="submit">
+        <Button className="w-fit bg-red-650 hover:bg-red-700" type="submit">
           Acessar
         </Button>
       </form>
