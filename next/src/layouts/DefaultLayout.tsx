@@ -8,7 +8,7 @@ type DefaultLayoutProps = {
 
 export function DefaultLayout({ children }: DefaultLayoutProps) {
   return (
-    <div className="flex flex-col min-h-screen bg-neutral-950 text-neutral-50">
+    <div className="flex min-h-screen flex-col bg-neutral-950 text-neutral-50">
       <NavBar />
       <Header />
       {children}

@@ -38,10 +38,10 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col items-center space-y-6 w-3/5"
+        className="flex w-3/5 flex-col items-center space-y-6"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <h1 className="text-3xl font-bold text-red-750">Área Restrita</h1>
+        <h1 className="text-red-750 text-3xl font-bold">Área Restrita</h1>
         <FormField
           control={form.control}
           name="login"

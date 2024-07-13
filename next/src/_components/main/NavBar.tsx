@@ -8,7 +8,7 @@ export function NavBar() {
   const location = usePathname();
 
   return (
-    <nav className="sticky top-0 left-0 bg-neutral-950 p-4 z-10 flex flex-row flex-wrap gap-16 h-fit w-full justify-center content-start items-center text-base max-md:text-sm max-md:gap-8">
+    <nav className="sticky left-0 top-0 z-10 flex h-fit w-full flex-row flex-wrap content-start items-center justify-center gap-16 bg-neutral-950 p-4 text-base max-md:gap-8 max-md:text-sm">
       <NavLink thisPage={location === "/"} href="/">
         pag. inicial
       </NavLink>

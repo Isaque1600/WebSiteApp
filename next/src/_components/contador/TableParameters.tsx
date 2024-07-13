@@ -31,7 +31,7 @@ export function TableParameters({
   return (
     <div className="flex flex-row items-center justify-center gap-2">
       <Select defaultValue="null" onValueChange={setMonth}>
-        <SelectTrigger className="capitalize w-36 outline-none text-lg border-0 border-b-2 shadow-none rounded-none rounded-t-md border-gray-800 hover:bg-zinc-200 hover:shadow-inner">
+        <SelectTrigger className="w-36 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner">
           <SelectValue placeholder="Todos" />
         </SelectTrigger>
         <SelectContent className="capitalize">
@@ -44,7 +44,7 @@ export function TableParameters({
         </SelectContent>
       </Select>
       <Select defaultValue="null" onValueChange={setYear}>
-        <SelectTrigger className="capitalize w-36 outline-none text-lg border-0 border-b-2 shadow-none rounded-none rounded-t-md border-gray-800 hover:bg-zinc-200 hover:shadow-inner">
+        <SelectTrigger className="w-36 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner">
           <SelectValue placeholder="Todos" />
         </SelectTrigger>
         <SelectContent className="capitalize">
@@ -57,7 +57,7 @@ export function TableParameters({
         </SelectContent>
       </Select>
       <Select defaultValue="null" onValueChange={setName}>
-        <SelectTrigger className="capitalize min-w-96 w-fit space-x-2 outline-none text-lg border-0 border-b-2 shadow-none rounded-none rounded-t-md border-gray-800 hover:bg-zinc-200 hover:shadow-inner">
+        <SelectTrigger className="w-fit min-w-96 space-x-2 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner">
           <SelectValue placeholder="Todos" />
         </SelectTrigger>
         <SelectContent className="capitalize">

@@ -17,16 +17,16 @@ export default function SideBar({ className, ...props }: SideBarProps) {
       </Link>
       <Separator
         orientation="horizontal"
-        className="w-full my-4 bg-neutral-700"
+        className="my-4 w-full bg-neutral-700"
       />
-      <div className="flex flex-col flex-wrap w-full">
-        <h1 className="text-2xl px-4 text-red-650 mb-4 w-full max-lg:text-lg">
+      <div className="flex w-full flex-col flex-wrap">
+        <h1 className="mb-4 w-full px-4 text-2xl text-red-650 max-lg:text-lg">
           Documentos
         </h1>
         <NavLinkContador
           href={"/contador"}
           prefix={
-            <FileTextIcon className="text-red-650 size-7 max-lg:size-5" />
+            <FileTextIcon className="size-7 text-red-650 max-lg:size-5" />
           }
         >
           Arquivos Fiscais
@@ -34,7 +34,7 @@ export default function SideBar({ className, ...props }: SideBarProps) {
         <NavLinkContador
           href={"/contador/certificados"}
           prefix={
-            <FileTextIcon className="text-red-650 size-7 max-lg:size-5" />
+            <FileTextIcon className="size-7 text-red-650 max-lg:size-5" />
           }
         >
           Certificados
@@ -42,7 +42,7 @@ export default function SideBar({ className, ...props }: SideBarProps) {
         <NavLinkContador
           href={"/contador/speds"}
           prefix={
-            <FileTextIcon className="text-red-650 size-7 max-lg:size-5" />
+            <FileTextIcon className="size-7 text-red-650 max-lg:size-5" />
           }
         >
           SPED's Fiscais
@@ -50,7 +50,7 @@ export default function SideBar({ className, ...props }: SideBarProps) {
       </div>
       <Separator
         orientation="horizontal"
-        className="w-full my-4 bg-neutral-700"
+        className="my-4 w-full bg-neutral-700"
       />
       <NavLinkContador
         href={"/logout"}

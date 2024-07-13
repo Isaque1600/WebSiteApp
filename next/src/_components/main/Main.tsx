@@ -6,7 +6,7 @@ type MainProps = ComponentProps<"main">;
 export function Main({ className, ...props }: MainProps) {
   return (
     <main
-      className={twMerge("flex my-16 max-md:flex-col", className)}
+      className={twMerge("my-16 flex max-md:flex-col", className)}
       {...props}
     >
       {props.children}

@@ -2,26 +2,26 @@ import { Main } from "@/_components/main/Main";
 
 export default function Gdoor() {
   return (
-    <Main className="flex-row max-xl:flex-wrap gap-y-6 justify-around items-start max-md:items-center max-md:gap-6">
-      <div className="flex flex-col w-1/3 gap-1 justify-center items-center text-center">
-        <h1 className="text-xl uppercase font-medium title">gdoor pro</h1>
-        <div className="flex flex-col w-1/2 min-w-[250px] gap-2 text-lg links">
+    <Main className="flex-row items-start justify-around gap-y-6 max-xl:flex-wrap max-md:items-center max-md:gap-6">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
+        <h1 className="title text-xl font-medium uppercase">gdoor pro</h1>
+        <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Pack Pro
           </a>
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Pro Completo
           </a>
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
@@ -29,18 +29,18 @@ export default function Gdoor() {
           </a>
         </div>
       </div>
-      <div className="flex flex-col w-1/3 gap-1 justify-center items-center text-center">
-        <h1 className="text-lg uppercase font-medium title">gdoor slim</h1>
-        <div className="flex flex-col w-1/2 min-w-[250px] gap-2 text-lg links">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
+        <h1 className="title text-lg font-medium uppercase">gdoor slim</h1>
+        <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Pack slim
           </a>
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
@@ -48,18 +48,18 @@ export default function Gdoor() {
           </a>
         </div>
       </div>
-      <div className="flex flex-col w-1/3 gap-1 justify-center items-center text-center">
-        <h1 className="text-lg uppercase font-medium title">gdoor mei</h1>
-        <div className="flex flex-col w-1/2 min-w-[250px] gap-2 text-lg links">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
+        <h1 className="title text-lg font-medium uppercase">gdoor mei</h1>
+        <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Pack Mei
           </a>
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
@@ -67,18 +67,18 @@ export default function Gdoor() {
           </a>
         </div>
       </div>
-      <div className="flex flex-col w-1/3 gap-1 justify-center items-center text-center">
-        <h1 className="text-lg uppercase font-medium title">gdoor ct-e</h1>
-        <div className="flex flex-col w-1/2 min-w-[250px] gap-2 text-lg links">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
+        <h1 className="title text-lg font-medium uppercase">gdoor ct-e</h1>
+        <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Pack CT-e
           </a>
           <a
-            className="bg-red-650 w-full p-2 rounded-md hover:text-neutral-400"
+            className="w-full rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >

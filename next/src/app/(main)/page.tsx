@@ -2,19 +2,19 @@ import { Main } from "@/_components/main/Main";
 
 export default function Index() {
   return (
-    <Main className="flex-row justify-around items-start max-md:flex-col max-md:items-center max-md:gap-6">
-      <div className="flex flex-col w-1/3 gap-1 justify-center items-center text-center">
-        <h1 className="text-xl font-medium title">Acesso Remoto</h1>
-        <div className="flex flex-col w-1/2 min-w-[250px] gap-2 text-lg links">
+    <Main className="flex-row items-start justify-around max-md:flex-col max-md:items-center max-md:gap-6">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
+        <h1 className="title text-xl font-medium">Acesso Remoto</h1>
+        <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Team Viewer 13
           </a>
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
@@ -22,32 +22,32 @@ export default function Index() {
           </a>
         </div>
       </div>
-      <div className="flex flex-col w-1/3 gap-1 justify-center items-center text-center">
-        <h1 className="text-xl font-medium title">Sites NF-e / NFC-e</h1>
-        <div className="flex flex-col w-1/2 min-w-[250px] gap-2 text-lg links">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
+        <h1 className="title text-xl font-medium">Sites NF-e / NFC-e</h1>
+        <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Portal NF-e
           </a>
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Baixar XML (fsist)
           </a>
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Baixar XML NFC-e
           </a>
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
@@ -55,32 +55,32 @@ export default function Index() {
           </a>
         </div>
       </div>
-      <div className="flex flex-col w-1/3 gap-1 justify-center items-center text-center">
-        <h1 className="text-xl font-medium title">Outros Sites</h1>
-        <div className="flex flex-col w-1/2 min-w-[250px] gap-2 text-lg links">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
+        <h1 className="title text-xl font-medium">Outros Sites</h1>
+        <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             SINTEGRA
           </a>
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Consulta CNPJ
           </a>
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >
             Receita da Paraíba
           </a>
           <a
-            className="bg-red-650 w-full text-nowrap p-2 rounded-md hover:text-neutral-400"
+            className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
             href="#"
           >

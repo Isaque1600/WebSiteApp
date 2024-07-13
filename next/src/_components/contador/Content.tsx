@@ -44,7 +44,7 @@ export function Content({ page }: Props) {
 
   return (
     <>
-      <Header className="justify-between w-full">
+      <Header className="w-full justify-between">
         {page != "certificados" ? (
           <TableParameters
             setMonth={setMonth}
@@ -53,7 +53,7 @@ export function Content({ page }: Props) {
           />
         ) : null}
       </Header>
-      <div className="h-full bg-neutral-100 overflow-hidden shadow-md shadow-neutral-400 rounded-lg">
+      <div className="h-full overflow-hidden rounded-lg bg-neutral-100 shadow-md shadow-neutral-400">
         <Utilities
           downloadBtn={displayDownload}
           onClick={() => {
@@ -66,7 +66,7 @@ export function Content({ page }: Props) {
         />
         <Separator
           orientation="horizontal"
-          className="mt-0 mb-4 w-full bg-gray-300"
+          className="mb-4 mt-0 w-full bg-gray-300"
         />
         {loading ? (
           <Loader2 className="m-auto size-auto animate-spin" />

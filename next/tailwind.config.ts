@@ -23,6 +23,10 @@ const config = {
           550: "#f70000",
           650: "#db1818",
         },
+        zinc: {
+          650: "#414141",
+          750: "#393939",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

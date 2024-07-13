@@ -10,8 +10,8 @@ export function Header({ children, className }: HeaderProps) {
   return (
     <header
       className={twJoin(
-        "flex flex-row rounded-lg p-5 px-6 items-center bg-neutral-100 shadow-neutral-400 shadow-md",
-        className
+        "flex flex-row items-center rounded-lg bg-neutral-100 p-5 px-6 shadow-md shadow-neutral-400",
+        className,
       )}
     >
       <h1 className="text-lg">Arquivos Fiscais - {"user".toUpperCase()}</h1>

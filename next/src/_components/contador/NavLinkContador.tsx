@@ -15,8 +15,8 @@ export default function NavLinkContador({
   return (
     <NavLink
       className={twMerge(
-        "flex flex-row items-center text-lg normal-case font-normal rounded-md hover:bg-zinc-800 h-12 gap-2 p-3 px-4 max-lg:text-sm",
-        className
+        "flex h-12 flex-row items-center gap-2 rounded-md p-3 px-4 text-lg font-normal normal-case hover:bg-zinc-800 max-lg:text-sm",
+        className,
       )}
       {...props}
     >

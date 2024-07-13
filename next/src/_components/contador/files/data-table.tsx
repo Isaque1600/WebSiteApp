@@ -66,7 +66,7 @@ export function DataTable<TData, TValue>({
         containerClassName="overflow-y-hidden w-full p-4 max-h-[78vh]"
         className="w-full"
       >
-        <TableHeader className="text-xl font-bold tracking-tight w-full block">
+        <TableHeader className="block w-full text-xl font-bold tracking-tight">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="w-full">
               {headerGroup.headers.map((header) => {
@@ -74,13 +74,13 @@ export function DataTable<TData, TValue>({
                   <TableHead
                     key={header.id}
                     data-file={header.id == "file"}
-                    className="rounded-sm text-neutral-800 text-center odd:pl-0 border-y-2 border-neutral-500 data-[file=true]:w-full"
+                    className="rounded-sm border-y-2 border-neutral-500 text-center text-neutral-800 odd:pl-0 data-[file=true]:w-full"
                   >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );
@@ -88,24 +88,24 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="text-lg max-h-[78vh] block">
+        <TableBody className="block max-h-[78vh] text-lg">
           <ScrollArea className="h-[70vh]">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className=" hover:bg-slate-200 last:rounded-b-lg data-[state=selected]:shadow-inner data-[state=selected]:shadow-black/30"
+                  className="last:rounded-b-lg hover:bg-slate-200 data-[state=selected]:shadow-inner data-[state=selected]:shadow-black/30"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       data-file={cell.column.id}
-                      className="rounded-sm text-neutral-800 text-center odd:pl-0 data-[file=file]:w-full"
+                      className="rounded-sm text-center text-neutral-800 odd:pl-0 data-[file=file]:w-full"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -115,11 +115,11 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="text-center w-full"
+                  className="w-full text-center"
                 >
-                  <div className="flex flex-col items-center justify-center h-96">
-                    <SearchX className="text-red-650 size-40" />
-                    <span className="text-red-650 text-3xl">
+                  <div className="flex h-96 flex-col items-center justify-center">
+                    <SearchX className="size-40 text-red-650" />
+                    <span className="text-3xl text-red-650">
                       Nenhum arquivo encontrado
                     </span>
                   </div>

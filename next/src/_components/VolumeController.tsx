@@ -15,7 +15,7 @@ export function VolumeController({
   ...props
 }: VolumeControllerProps) {
   return (
-    <div className="flex items-center gap-2 min-w-24 w-fit">
+    <div className="flex w-fit min-w-24 items-center gap-2">
       <Slider
         defaultValue={defaultValue}
         value={value}

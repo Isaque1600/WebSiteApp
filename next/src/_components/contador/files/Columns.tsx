@@ -15,7 +15,7 @@ export const columns: ColumnDef<Files>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <div className="flex items-center justify-center space-x-6 w-16">
+      <div className="flex w-16 items-center justify-center space-x-6">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
@@ -27,12 +27,12 @@ export const columns: ColumnDef<Files>[] = [
         />
         <Separator
           orientation="vertical"
-          className="h-6 bg-neutral-500 w-[2px]"
+          className="h-6 w-[2px] bg-neutral-500"
         />
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center space-x-6 w-16">
+      <div className="flex w-16 items-center justify-center space-x-6">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -40,7 +40,7 @@ export const columns: ColumnDef<Files>[] = [
         />
         <Separator
           orientation="vertical"
-          className="h-6 bg-neutral-500 w-[2px]"
+          className="h-6 w-[2px] bg-neutral-500"
         />
       </div>
     ),
@@ -50,25 +50,25 @@ export const columns: ColumnDef<Files>[] = [
     header: ({ column }) => (
       <div
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="flex items-center min-w-96 justify-center cursor-pointer w-full"
+        className="flex w-full min-w-96 cursor-pointer items-center justify-center"
       >
         <Button
           variant={"ghost"}
-          className="flex flex-row items-center w-full justify-center cursor-pointer text-lg hover:bg-transparent"
+          className="flex w-full cursor-pointer flex-row items-center justify-center text-lg hover:bg-transparent"
         >
           Arquivo{" "}
           {column.getIsSorted() == "asc" ? <CaretUpIcon /> : <CaretDownIcon />}
         </Button>
         <Separator
           orientation="vertical"
-          className="h-6 bg-neutral-500 w-[2px]"
+          className="h-6 w-[2px] bg-neutral-500"
         />
       </div>
     ),
     cell: ({ row }) => (
       <div className="flex h-10 min-w-96 items-center text-left">
         <a
-          className="flex underline w-full h-full gap-2 align-middle items-center"
+          className="flex h-full w-full items-center gap-2 align-middle underline"
           href={row.getValue("file")}
           download={true}
         >
@@ -77,7 +77,7 @@ export const columns: ColumnDef<Files>[] = [
         </a>
         <Separator
           orientation="vertical"
-          className="h-6 bg-neutral-500 w-[2px]"
+          className="h-6 w-[2px] bg-neutral-500"
         />
       </div>
     ),
@@ -87,29 +87,29 @@ export const columns: ColumnDef<Files>[] = [
     header: ({ column }) => (
       <div
         onClick={() => column.toggleSorting(column.getIsSorted() == "asc")}
-        className="flex items-center justify-center w-28"
+        className="flex w-28 items-center justify-center"
       >
         <Button
           variant={"ghost"}
-          className="flex flex-row items-center px-0 w-full justify-center cursor-pointer text-lg hover:bg-transparent"
+          className="flex w-full cursor-pointer flex-row items-center justify-center px-0 text-lg hover:bg-transparent"
         >
           Tamanho{" "}
           {column.getIsSorted() == "asc" ? <CaretUpIcon /> : <CaretDownIcon />}
         </Button>
         <Separator
           orientation="vertical"
-          className="h-6 bg-neutral-500 w-[2px]"
+          className="h-6 w-[2px] bg-neutral-500"
         />
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center w-28">
+      <div className="flex w-28 items-center justify-center">
         <div className="w-full items-center pr-1">
           {row.getValue("size")} KB
         </div>
         <Separator
           orientation="vertical"
-          className="h-6 bg-neutral-500 w-[2px]"
+          className="h-6 w-[2px] bg-neutral-500"
         />
       </div>
     ),
@@ -119,11 +119,11 @@ export const columns: ColumnDef<Files>[] = [
     header: ({ column }) => (
       <div
         onClick={() => column.toggleSorting(column.getIsSorted() == "asc")}
-        className="flex items-center justify-center w-52"
+        className="flex w-52 items-center justify-center"
       >
         <Button
           variant={"ghost"}
-          className="flex flex-row items-center w-full justify-center cursor-pointer text-lg hover:bg-transparent"
+          className="flex w-full cursor-pointer flex-row items-center justify-center text-lg hover:bg-transparent"
         >
           Data de Modificação{" "}
           {column.getIsSorted() == "asc" ? <CaretUpIcon /> : <CaretDownIcon />}
@@ -131,7 +131,7 @@ export const columns: ColumnDef<Files>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center w-52">
+      <div className="flex w-52 items-center justify-center">
         <div className="w-full text-center">{row.getValue("mTime")}</div>
       </div>
     ),

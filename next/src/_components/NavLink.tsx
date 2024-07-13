@@ -12,8 +12,8 @@ export function NavLink({ thisPage, children, ...props }: NavLinkProps) {
     <Link
       data-thispage={thisPage}
       className={twMerge(
-        "font-bold uppercase text-slate-50 max-h-6 w-auto hover:text-red-650 data-[thisPage=true]:text-red-650 text-nowrap",
-        props.className
+        "max-h-6 w-auto text-nowrap font-bold uppercase text-slate-50 hover:text-red-650 data-[thisPage=true]:text-red-650",
+        props.className,
       )}
       {...props}
     >

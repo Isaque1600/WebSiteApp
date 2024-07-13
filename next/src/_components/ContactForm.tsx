@@ -45,10 +45,10 @@ export function ContactForm() {
   return (
     <Form {...form}>
       <form
-        className="flex flex-col items-center space-y-6 w-3/5 h-full"
+        className="flex h-full w-3/5 flex-col items-center space-y-6"
         onSubmit={form.handleSubmit(onSubmit)}
       >
-        <h1 className="text-3xl font-bold text-red-750">Fale Conosco</h1>
+        <h1 className="text-red-750 text-3xl font-bold">Fale Conosco</h1>
         <FormField
           control={form.control}
           name="name"
@@ -83,18 +83,18 @@ export function ContactForm() {
           control={form.control}
           name="message"
           render={({ field }) => (
-            <FormItem className="w-full h-[256px] max-md:h-[250px]">
+            <FormItem className="h-[256px] w-full max-md:h-[250px]">
               <FormControl className="">
                 <Textarea
                   placeholder="Mensagem"
-                  className="bg-slate-200 border-slate-200 text-slate-800 h-full"
+                  className="h-full border-slate-200 bg-slate-200 text-slate-800"
                   {...field}
                 />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-fit bg-red-750 hover:bg-red-800">
+        <Button type="submit" className="bg-red-750 w-fit hover:bg-red-800">
           Enviar
         </Button>
       </form>
