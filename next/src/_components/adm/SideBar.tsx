@@ -1,8 +1,23 @@
 "use client";
 
-import { BarChart4, Home, LogOut, Monitor, Users } from "lucide-react";
+import {
+  BarChart4,
+  FilePlus,
+  Home,
+  List,
+  LogOut,
+  Monitor,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 type Props = {
   sideBar: boolean;
@@ -25,33 +40,76 @@ export default function SideBar({ sideBar }: Props) {
         <span className="max-lg:hidden">Dashboard</span>
       </Link>
       <Link
-        href={"/admin"}
-        data-active={location === "/relatorio"}
+        href={"/admin/relatorio"}
+        data-active={location === "/admin/relatorio"}
         className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
       >
         <BarChart4 />
         <span className="max-lg:hidden">Relatório</span>
       </Link>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="item-1" className="border-none">
+          <AccordionTrigger
+            className="flex h-11 w-full flex-row items-center justify-between px-2 py-2 text-lg font-normal hover:bg-neutral-900 hover:shadow-sm"
+            chevronClassName="max-lg:hidden text-neutral-100"
+          >
+            <span>
+              <Users />
+            </span>
+            <span className="max-lg:hidden">Usuários</span>
+          </AccordionTrigger>
+          <AccordionContent className="w-full pb-0 text-lg">
+            <Link
+              href={"/admin/usuarios"}
+              data-active={location === "/admin/usuarios"}
+              className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
+            >
+              <List />
+              <span className="max-lg:hidden">Listar</span>
+            </Link>
+            <Link
+              href={"/admin/usuarios"}
+              data-active={location === "/admin/usuarios/cadastrar"}
+              className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
+            >
+              <UserPlus />
+              <span className="max-lg:hidden">Cadastrar</span>
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-2" className="border-none">
+          <AccordionTrigger
+            className="flex h-11 w-full flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm"
+            chevronClassName="max-lg:hidden text-neutral-100"
+          >
+            <span>
+              <Monitor />
+            </span>
+            <span className="max-lg:hidden">Sistemas</span>
+          </AccordionTrigger>
+          <AccordionContent className="w-full pb-0 text-lg">
+            <Link
+              href={"/admin/sistemas"}
+              data-active={location === "/admin/sistemas"}
+              className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
+            >
+              <List />
+              <span className="max-lg:hidden">Listar</span>
+            </Link>
+            <Link
+              href={"/admin/sistemas/cadastrar"}
+              data-active={location === "/admin/sistemas/cadastrar"}
+              className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
+            >
+              <FilePlus />
+              <span className="max-lg:hidden">Cadastrar</span>
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
       <Link
-        href={"/admin"}
-        data-active={location === "/usuarios"}
-        className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
-      >
-        <Users />
-        <span className="max-lg:hidden">Usuários</span>
-      </Link>
-      <Link
-        href={"/admin"}
-        data-active={location === "/sistemas"}
-        className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
-      >
-        <Monitor />
-        <span className="max-lg:hidden">Sistemas</span>
-      </Link>
-      <Link
-        href={"/admin"}
-        data-active={location === "/sair"}
-        className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
+        href={"/logout"}
+        className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm"
       >
         <LogOut />
         <span className="max-lg:hidden">Sair</span>
