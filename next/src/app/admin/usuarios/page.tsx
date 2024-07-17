@@ -78,6 +78,7 @@ export default function Usuarios({}: Props) {
   const page = searchParams.get("page") || "1";
   const search = searchParams.get("search") || "";
   const filter = searchParams.get("filter") || "nome";
+  const perPage = searchParams.get("per_page") || "25";
 
   return (
     <Section>
@@ -101,6 +102,7 @@ export default function Usuarios({}: Props) {
           search={search}
           searchColumns={["nome"]}
           filter={filter}
+          per_page={parseInt(perPage)}
         />
       </div>
     </Section>

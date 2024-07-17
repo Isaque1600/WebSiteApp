@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "../../ui/table";
 import Pagination from "../Pagination";
+import PerPage from "../PerPage";
 import Search from "../Search";
 import { columnsSchema } from "./UsersColumn";
 
@@ -28,6 +29,7 @@ interface DataTableProps<TData, TValue> {
   search: string;
   filter: string;
   searchColumns: string[];
+  per_page: number;
 }
 export default function DataTable<TData, TValue>({
   data,
@@ -36,6 +38,7 @@ export default function DataTable<TData, TValue>({
   search,
   filter,
   searchColumns,
+  per_page,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -51,15 +54,18 @@ export default function DataTable<TData, TValue>({
     },
   });
 
-  // TODO - Per page content
-  // TODO - Client or Accountant
-  // TODO - Active or Inactive
+  //-TODO - SS Pagination
+  //-TODO - Search
+  //-TODO - Per page content
+  // TODO - Select Type
+  // TODO - Select Status
   // TODO - Toggle column SS (update actual column rendering method)
 
   return (
     <div className="my-4 flex flex-col items-center">
-      <div className="w-full py-4">
+      <div className="flex w-full gap-10 py-4">
         <Search search={search} filter={filter} columns={searchColumns} />
+        <PerPage per_page={per_page} />
       </div>
       <div className="w-full">
         <Table className="w-full rounded-lg" containerClassName="">

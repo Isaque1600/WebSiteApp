@@ -1,7 +1,7 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -20,13 +20,14 @@ type Props = {
 };
 
 export default function Search({ search, filter, columns }: Props) {
+  const per_page = useSearchParams().get("per_page") || null;
   const router = useRouter();
   const searchRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
     if (searchRef.current?.value)
       router.push(
-        `/admin/usuarios?filter=${filter}&search=${searchRef.current?.value}`,
+        `/admin/usuarios?filter=${filter}&search=${searchRef.current?.value}${per_page ? `&per_page=${per_page}` : ""}`,
       );
   };
 

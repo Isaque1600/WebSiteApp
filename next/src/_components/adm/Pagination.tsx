@@ -12,7 +12,7 @@ export default function Pagination({ pages, page }: Props) {
   const canPreviousPage = page > 1;
   const canNextPage = page < pages.length;
   const totalPages = pages.length;
-  const params = getSearchParams();
+  const params = getSearchParams("page");
 
   return (
     <div className="mt-2 flex select-none items-center space-x-4 text-xl text-neutral-100">
