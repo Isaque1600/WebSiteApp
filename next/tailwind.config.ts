@@ -25,7 +25,9 @@ const config = {
         },
         zinc: {
           650: "#414141",
+          725: "#3c3c3c",
           750: "#393939",
+          775: "#282828",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

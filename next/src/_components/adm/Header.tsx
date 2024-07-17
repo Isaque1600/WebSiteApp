@@ -16,7 +16,7 @@ type Props = {
 
 export default function Header({ sideBar, setSideBar }: Props) {
   return (
-    <header className="sticky top-0 flex h-28 w-full select-none flex-row items-center justify-between bg-neutral-950 p-5 px-9 shadow shadow-neutral-950">
+    <header className="sticky top-0 z-50 flex h-28 w-full select-none flex-row items-center justify-between bg-neutral-950 p-5 px-9 shadow shadow-neutral-950">
       <div className="flex flex-row items-center gap-8">
         <Menu
           className="size-12 cursor-pointer text-neutral-50"
