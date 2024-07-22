@@ -54,7 +54,6 @@ export default function Search({ search, filter, columns }: Props) {
       <Select
         onValueChange={(e) => {
           filter = e;
-          console.log(filter);
         }}
       >
         <SelectTrigger className="min-w-36 border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">

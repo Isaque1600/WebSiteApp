@@ -5,7 +5,7 @@ type Props = {
   className?: string;
 };
 
-export default function Box({ children, className }: Props) {
+export function Box({ children, className }: Props) {
   return (
     <div
       className={twJoin(

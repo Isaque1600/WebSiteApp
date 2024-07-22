@@ -5,11 +5,11 @@ type Props = {
   className?: string;
 };
 
-export default function Section({ children, className }: Props) {
+export function SectionRoot({ children, className }: Props) {
   return (
     <section
       className={twMerge(
-        "rounded-md bg-zinc-650 p-4 shadow shadow-stone-700",
+        "w-full overflow-hidden rounded-md bg-zinc-650 p-4 shadow shadow-stone-700",
         className,
       )}
     >

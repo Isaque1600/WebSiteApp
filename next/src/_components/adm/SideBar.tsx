@@ -68,7 +68,7 @@ export default function SideBar({ sideBar }: Props) {
               <span className="max-lg:hidden">Listar</span>
             </Link>
             <Link
-              href={"/admin/usuarios"}
+              href={"/admin/usuarios/cadastrar"}
               data-active={location === "/admin/usuarios/cadastrar"}
               className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
             >
@@ -79,7 +79,7 @@ export default function SideBar({ sideBar }: Props) {
         </AccordionItem>
         <AccordionItem value="item-2" className="border-none">
           <AccordionTrigger
-            className="flex h-11 w-full flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm"
+            className="flex h-11 w-full flex-row items-center justify-between px-2 py-2 text-lg hover:bg-neutral-900 hover:shadow-sm"
             chevronClassName="max-lg:hidden text-neutral-100"
           >
             <span>
