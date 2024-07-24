@@ -31,8 +31,8 @@ export default function Sistemas() {
       <div className="mb-3 flex items-center justify-between">
         <Section.Title>Listar</Section.Title>
         <Link
-          className="flex items-center gap-2 rounded-xl bg-red-650 p-4 text-lg font-semibold text-neutral-100"
-          href={"/admin/usuarios/cadastrar"}
+          className="flex items-center gap-2 rounded-xl bg-red-650 p-4 text-lg font-semibold text-neutral-100 hover:bg-red-700"
+          href={"/admin/sistemas/cadastrar"}
         >
           <SquarePlus />
           <span>Cadastrar</span>

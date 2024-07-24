@@ -144,7 +144,7 @@ export const columnsSchema: ColumnDef<Users>[] = columnsSelected.map(
         header: ({ column }: any) => (
           <div
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            className="flex h-full w-full min-w-96 cursor-pointer items-center justify-center bg-zinc-775"
+            className="flex h-full w-full min-w-96 items-center justify-center bg-zinc-775"
           >
             <span className="text-lg capitalize text-neutral-100">
               {column.id}

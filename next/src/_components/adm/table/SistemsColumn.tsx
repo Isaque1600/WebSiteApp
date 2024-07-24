@@ -20,12 +20,12 @@ export const columnsSchema: ColumnDef<Sistems>[] = [
   {
     accessorKey: "id",
     header: ({ column }: any) => (
-      <div className="flex h-full w-full min-w-96 cursor-pointer items-center justify-center bg-zinc-775 text-lg text-neutral-100">
+      <div className="flex h-full w-full min-w-96 items-center justify-center bg-zinc-775 text-lg text-neutral-100">
         <span className="capitalize">{column.id}</span>
       </div>
     ),
     cell: ({ cell }: any) => (
-      <div className="bg-zinc-750 p-5 text-lg text-neutral-100">
+      <div className="bg-zinc-750 p-4 text-lg text-neutral-100">
         {cell.getValue()}
       </div>
     ),
@@ -33,12 +33,12 @@ export const columnsSchema: ColumnDef<Sistems>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <div className="flex h-full w-full min-w-96 cursor-pointer items-center justify-center bg-zinc-775 text-lg text-neutral-100">
+      <div className="flex h-full w-full min-w-96 items-center justify-center bg-zinc-775 text-lg text-neutral-100">
         <span className="capitalize">{column.id}</span>
       </div>
     ),
     cell: ({ cell }: any) => (
-      <div className="bg-zinc-750 p-5 text-lg text-neutral-100">
+      <div className="flex h-16 items-center justify-center bg-zinc-750 px-4 text-lg text-neutral-100">
         {cell.getValue()}
       </div>
     ),
@@ -46,7 +46,7 @@ export const columnsSchema: ColumnDef<Sistems>[] = [
   {
     accessorKey: "actions",
     header: ({ column }) => (
-      <div className="flex h-full w-full min-w-96 cursor-pointer items-center justify-center bg-zinc-775 text-lg text-neutral-100">
+      <div className="flex h-full w-full min-w-96 items-center justify-center bg-zinc-775 text-lg text-neutral-100">
         <span className="capitalize">{column.id}</span>
       </div>
     ),
@@ -54,12 +54,10 @@ export const columnsSchema: ColumnDef<Sistems>[] = [
       const user = cell.row.original;
 
       return (
-        <div className="flex h-full justify-center gap-2 bg-zinc-750 p-4 text-lg text-neutral-100">
+        <div className="flex h-16 items-center justify-center gap-2 bg-zinc-750 p-2 text-lg text-neutral-100">
           <Dialog>
-            <DialogTrigger>
-              <Button className="bg-emerald-500 hover:bg-emerald-600">
-                <Edit />
-              </Button>
+            <DialogTrigger className="rounded-md bg-emerald-400 p-2 px-4 hover:bg-emerald-500">
+              <Edit />
             </DialogTrigger>
             <DialogContent className="border-zinc-750 bg-zinc-750 text-neutral-100">
               <DialogHeader>
@@ -71,10 +69,8 @@ export const columnsSchema: ColumnDef<Sistems>[] = [
             </DialogContent>
           </Dialog>
           <Dialog>
-            <DialogTrigger>
-              <Button variant={"destructive"}>
-                <Trash2 />
-              </Button>
+            <DialogTrigger className="rounded-md bg-red-500 p-2 px-4 hover:bg-red-600">
+              <Trash2 />
             </DialogTrigger>
             <DialogContent className="border-zinc-750 bg-zinc-750 text-neutral-100">
               <DialogHeader>
@@ -90,6 +86,7 @@ export const columnsSchema: ColumnDef<Sistems>[] = [
                   onClick={() => {
                     console.log(user);
                   }}
+                  type="submit"
                   variant={"destructive"}
                 >
                   Deletar
