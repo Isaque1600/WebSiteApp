@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Person;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +13,12 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('situation')->default('active');
-            $table->string('type')->default('accountant');
-            $table->string('password');
+            $table->string('login', 100)->unique();
+            $table->string('senha', 300);
+            $table->string('loginTime')->nullable();
+            $table->string('situation', 60)->default('active');
+            $table->string('type', 20)->default('accountant');
+            $table->foreignIdFor(Person::class, 'person_id');
             $table->rememberToken();
             $table->timestamps();
         });
