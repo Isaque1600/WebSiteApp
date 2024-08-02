@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('loginTime')->nullable();
             $table->string('situation', 60)->default('active');
             $table->string('type', 20)->default('accountant');
-            $table->foreignIdFor(Person::class, 'person_id');
+            $table->foreignIdFor(Person::class, 'person_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
