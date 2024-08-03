@@ -24,6 +24,7 @@ export const columns: ColumnDef<Files>[] = [
           disabled={table.getRowCount() == 0}
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Selecionar tudo"
+          className="data-[state=checked]:bg-transparent data-[state=checked]:text-red-550"
         />
         <Separator
           orientation="vertical"
@@ -37,6 +38,7 @@ export const columns: ColumnDef<Files>[] = [
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Selecionar"
+          className="data-[state=checked]:bg-transparent data-[state=checked]:text-red-550"
         />
         <Separator
           orientation="vertical"
