@@ -27,15 +27,17 @@ export function Content({ page }: Props) {
   useEffect(() => {
     setLoading(true);
 
-    FetchData({ year: year, month: month, name: name })
-      .then((response) => {
-        console.log(year, month, name);
-        setRows(response);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setTimeout(() => {
+      FetchData({ year: year, month: month, name: name })
+        .then((response) => {
+          console.log(year, month, name);
+          setRows(response);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }, 2000);
   }, [year, month, name]);
 
   useEffect(() => {

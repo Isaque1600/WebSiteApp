@@ -1,7 +1,7 @@
-import { Section } from "@/_components/adm/section";
+import { Section } from "@/_components/adm/section/Section";
 
 type Props = {};
 
 export default function Cadastrar({}: Props) {
-  return <Section></Section>;
+  return <Section.Root></Section.Root>;
 }
