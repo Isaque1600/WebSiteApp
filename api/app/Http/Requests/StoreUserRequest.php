@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateSystemRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +23,11 @@ class UpdateSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'string', 'max:255'],
+            'login' => ['required', 'string', 'unique:users,login'],
+            'password' => ['required', 'string'],
+            'loginTime' => ['date_format:d/m/Y H:i:s'],
+            'situation' => ['required', 'string', Rule::in(['ativo', 'inativo'])],
+            'type' => ['required', 'string', Rule::in(['admin', 'contador'])],
         ];
     }
 }

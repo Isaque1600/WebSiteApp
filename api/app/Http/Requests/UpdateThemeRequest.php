@@ -11,7 +11,7 @@ class UpdateThemeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateThemeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'theme' => ['required', 'string', 'max:255'],
         ];
     }
 }
