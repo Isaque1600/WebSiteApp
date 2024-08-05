@@ -37,7 +37,7 @@ class StorePersonRequest extends FormRequest
             'sistema' => ['string'],
             'serial' => ['string'],
             'obs' => ['string'],
-            'ven_cert' => ['date_format:d/m/Y'],
+            'ven_cert' => ['date'],
             'email' => ['string'],
             'situacao' => ['string', Rule::in(['ativo', 'inativo'])],
             'tef' => ['string', Rule::in(['sim', 'nao'])],

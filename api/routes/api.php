@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ClientController;
+use App\Http\Resources\PersonResource;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +23,9 @@ Route::group([
 
 });
 
+Route::prefix('person')->group(function () {
+
+    Route::get('client', [ClientController::class, 'index']);
+    Route::post('client', [ClientController::class, 'store']);
+
+});
