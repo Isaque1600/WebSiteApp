@@ -24,7 +24,7 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'login' => ['required', 'string', 'unique:users,login'],
-            'password' => ['required', 'string'],
+            'senha' => ['required', 'string'],
             'loginTime' => ['date_format:d/m/Y H:i:s'],
             'situation' => ['required', 'string', Rule::in(['ativo', 'inativo'])],
             'type' => ['required', 'string', Rule::in(['admin', 'contador'])],

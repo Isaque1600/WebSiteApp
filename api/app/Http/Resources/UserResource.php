@@ -19,10 +19,10 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'login' => $this->login,
             'senha' => decrypt($this->senha),
-            'loginTime' => date_format($this->loginTime, 'd/m/Y'),
+            'loginTime' => $this->loginTime?->format('d/m/Y H:i:s'),
             'situation' => $this->situation,
             'type' => $this->type,
-            'person_id' => PersonResource::collection($this->whenLoaded('person_id')),
+            'person' => PersonResource::collection($this->person()->get()),
         ];
     }
 }

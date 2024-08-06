@@ -23,11 +23,11 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'login' => ['required', 'string', 'unique:users,login'],
-            'password' => ['required', 'string'],
-            'loginTime' => ['date_format:d/m/Y H:i:s'],
-            'situation' => ['required', 'string', Rule::in(['ativo', 'inativo'])],
-            'type' => ['required', 'string', Rule::in(['admin', 'contador'])],
+            'login' => ['string', 'unique:users,login'],
+            'password' => ['string'],
+            'loginTime' => ['datetime'],
+            'situation' => ['string', Rule::in(['ativo', 'inativo'])],
+            'type' => ['string', Rule::in(['admin', 'contador'])],
         ];
     }
 }

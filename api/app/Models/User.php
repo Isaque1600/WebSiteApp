@@ -37,9 +37,21 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'loginTime' => 'datetime',
+        ];
+    }
+
     public function person()
     {
         return $this->belongsTo(Person::class, "person_id", "cod_pes");
+    }
+
+    public function userColumns()
+    {
+        return $this->hasOne(UserColumn::class, 'user_id', 'id');
     }
 
     /**

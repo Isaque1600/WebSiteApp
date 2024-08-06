@@ -30,7 +30,7 @@ class PersonResource extends JsonResource
             'sistema' => $this->sistema,
             'serial' => $this->serial,
             'obs' => $this->obs,
-            'ven_cert' => date_format($this->ven_cert, 'd/m/Y'),
+            'ven_cert' => $this->ven_cert?->format('d/m/Y'),
             'email' => $this->email,
             'situacao' => $this->situacao,
             'tef' => $this->tef,

@@ -22,8 +22,8 @@ class UpdateThemeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
-            'theme' => ['required', 'string', 'max:255'],
+            'user_id' => ['integer', 'exists:users,id', 'unique:themes,user_id'],
+            'theme' => ['string', 'max:255'],
         ];
     }
 }

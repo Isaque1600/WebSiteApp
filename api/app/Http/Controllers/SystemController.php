@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSystemRequest;
 use App\Http\Requests\UpdateSystemRequest;
+use App\Http\Resources\SystemResource;
 use App\Models\System;
 
 class SystemController
@@ -13,7 +14,7 @@ class SystemController
      */
     public function index()
     {
-        //
+        return SystemResource::collection(System::all());
     }
 
     /**
@@ -21,7 +22,10 @@ class SystemController
      */
     public function store(StoreSystemRequest $request)
     {
-        //
+        $system = new System($request->validated());
+        $system->save();
+
+        return response()->json(['data' => $system, 'message' => 'success'], 201);
     }
 
     /**
@@ -29,7 +33,7 @@ class SystemController
      */
     public function show(System $system)
     {
-        //
+        return new SystemResource($system);
     }
 
     /**
@@ -37,7 +41,9 @@ class SystemController
      */
     public function update(UpdateSystemRequest $request, System $system)
     {
-        //
+        $system->update($request->validated());
+
+        return response()->json(['data' => $system, 'message' => 'success'], 201);
     }
 
     /**
@@ -45,6 +51,8 @@ class SystemController
      */
     public function destroy(System $system)
     {
-        //
+        $system->deleteOrFail();
+
+        return response()->json(['message' => 'success'], 204);
     }
 }

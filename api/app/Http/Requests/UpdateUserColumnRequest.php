@@ -22,8 +22,8 @@ class UpdateUserColumnRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
-            'columns' => ['required', 'string', 'max:255'],
+            'user_id' => ['integer', 'exists:users,id', 'unique:users_columns,user_id'],
+            'columns' => ['string', 'max:255'],
         ];
     }
 }

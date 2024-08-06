@@ -63,7 +63,7 @@ class Person extends Model
     protected function casts(): array
     {
         return [
-            'ven_cert' => 'datetime:d/m/Y',
+            'ven_cert' => 'date',
         ];
     }
 

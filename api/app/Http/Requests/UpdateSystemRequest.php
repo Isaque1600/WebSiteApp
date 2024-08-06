@@ -22,7 +22,7 @@ class UpdateSystemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'string', 'max:255'],
+            'nome' => ['string', 'max:255', 'unique:systems,nome'],
         ];
     }
 }
