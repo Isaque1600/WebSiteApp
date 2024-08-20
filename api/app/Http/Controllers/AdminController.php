@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Crypt;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -24,7 +25,7 @@ class AdminController extends Controller
     {
         $admin = new User($request->validated());
         $admin->type = "admin";
-        $admin->senha = encrypt($request->senha);
+        $admin->senha = Crypt::encrypt($request->senha);
         $admin->save();
 
         return response()->json(['data' => $admin, 'message' => 'success'], 201);
@@ -57,7 +58,7 @@ class AdminController extends Controller
      */
     public function destroy(string $id)
     {
-        User::findOrFail($id)->where('type', '=', 'admin')->deleteOrFail();
+        User::findOrFail($id)->where('type', '=', 'admin')->delete();
 
         return response()->json(['message' => 'success'], 204);
     }

@@ -10,6 +10,7 @@ use App\Http\Resources\PersonResource;
 use App\Http\Resources\UserResource;
 use App\Models\Person;
 use App\Models\User;
+use Crypt;
 use Illuminate\Http\Request;
 
 class PersonController extends Controller
@@ -51,7 +52,7 @@ class PersonController extends Controller
         if ($type == "contador") {
             $user = new User();
             $user->login = $request->nome;
-            $user->senha = encrypt($request->senha);
+            $user->senha = Crypt::encrypt($request->senha);
             $user->type = "contador";
             $user->situation = $request->situacao;
             $user->person()->associate($person);

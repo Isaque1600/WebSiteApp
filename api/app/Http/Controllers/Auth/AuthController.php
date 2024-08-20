@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use PHPOpenSourceSaver\JWTAuth\Contracts\Providers\Auth;
+use App\Models\User;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class AuthController extends Controller
+class AuthController extends Controller implements HasMiddleware
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
+     * Get the middleware that should be assigned to the controller.
      */
-    public function __construct()
+    public static function middleware(): array
     {
+        return [
+            new Middleware(middleware: 'auth:api', except: ['login']),
+        ];
     }
 
     /**
@@ -26,9 +28,13 @@ class AuthController extends Controller
     {
         $credentials = request(['login', 'senha']);
 
-        if (!$token = auth()->attempt($credentials)) {
+        $user = User::where('login', $credentials['login'])->first();
+
+        if (!$user->validatePassword($credentials['senha'])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $token = auth()->login($user);
 
         return $this->respondWithToken($token);
     }
@@ -52,7 +58,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Usuário deslogado com sucesso']);
     }
 
     /**
