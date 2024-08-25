@@ -9,14 +9,15 @@ import {
   DialogTrigger,
 } from "@/_components/ui/dialog";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import UpdateDialog from "./Dialogs/UpdateDialog";
 
-export type Sistems = {
+export type Systems = {
   id: number;
   name: string;
 };
 
-export const columnsSchema: ColumnDef<Sistems>[] = [
+export const columnsSchema: ColumnDef<Systems>[] = [
   {
     accessorKey: "id",
     header: ({ column }: any) => (
@@ -55,19 +56,7 @@ export const columnsSchema: ColumnDef<Sistems>[] = [
 
       return (
         <div className="flex h-16 items-center justify-center gap-2 bg-zinc-750 p-2 text-lg text-neutral-100">
-          <Dialog>
-            <DialogTrigger className="rounded-md bg-emerald-400 p-2 px-4 hover:bg-emerald-500">
-              <Edit />
-            </DialogTrigger>
-            <DialogContent className="border-zinc-750 bg-zinc-750 text-neutral-100">
-              <DialogHeader>
-                <DialogTitle> Informações </DialogTitle>
-                <DialogDescription className="text-neutral-400">
-                  Test
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <UpdateDialog user={user} />
           <Dialog>
             <DialogTrigger className="rounded-md bg-red-500 p-2 px-4 hover:bg-red-600">
               <Trash2 />

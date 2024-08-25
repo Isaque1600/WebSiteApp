@@ -9,7 +9,7 @@ type Props = {
   required?: boolean;
 } & InputProps;
 
-export default function CustomInput({
+export function CustomInput({
   text,
   required = false,
   className,
