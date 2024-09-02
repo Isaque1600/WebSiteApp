@@ -23,26 +23,11 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'login' => ['required', 'string', 'max:255', 'unique:users'],
-            'senha' => ['required', 'string', 'max:255'],
-            'loginTime' => ['date_format:d/m/Y,d-m-Y,Y-m-d'],
-            'situacao' => ['string', Rule::in(['ativo', 'inativo'])],
-            'type' => ['string', Rule::in(['admin', 'contador'])],
-            'person_id' => ['required', 'integer', 'exists:people,id'],
-        ];
-    }
-
-    /**
-     * Get the error messages for the failed validations
-     * 
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'login.required' => "O login é obrigatório",
-            'login.unique' => "O login deve ser único",
-            'senha' => "A senha é obrigatória",
+            'login' => ['required', 'string', 'unique:users,login'],
+            'senha' => ['required', 'string'],
+            'loginTime' => ['date_format:d/m/Y H:i:s'],
+            'situation' => ['required', 'string', Rule::in(['ativo', 'inativo'])],
+            'type' => ['required', 'string', Rule::in(['admin', 'contador'])],
         ];
     }
 }
