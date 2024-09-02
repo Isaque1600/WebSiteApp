@@ -1,15 +1,5 @@
-import { Button } from "@/_components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/_components/ui/dialog";
 import { ColumnDef } from "@tanstack/react-table";
-import { Trash2 } from "lucide-react";
+import DeleteDialog from "./Dialogs/DeleteDialog";
 import UpdateDialog from "./Dialogs/UpdateDialog";
 
 export type Systems = {
@@ -57,32 +47,7 @@ export const columnsSchema: ColumnDef<Systems>[] = [
       return (
         <div className="flex h-16 items-center justify-center gap-2 bg-zinc-750 p-2 text-lg text-neutral-100">
           <UpdateDialog user={user} />
-          <Dialog>
-            <DialogTrigger className="rounded-md bg-red-500 p-2 px-4 hover:bg-red-600">
-              <Trash2 />
-            </DialogTrigger>
-            <DialogContent className="border-zinc-750 bg-zinc-750 text-neutral-100">
-              <DialogHeader>
-                <DialogTitle>
-                  Você tem certeza que deseja deletar esse registro?
-                </DialogTitle>
-                <DialogDescription className="text-neutral-400">
-                  Essa ação é irreversível, não pode ser desfeita!
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    console.log(user);
-                  }}
-                  type="submit"
-                  variant={"destructive"}
-                >
-                  Deletar
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <DeleteDialog user={user} />
         </div>
       );
     },

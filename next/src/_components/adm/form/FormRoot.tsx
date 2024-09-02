@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 
 type Props = {
   form: UseFormReturn<any>;
-  onSubmit: (values: any) => void;
+  onSubmit: (values: any) => any;
   wrapperClassName?: string;
   formClassName?: string;
   children?: React.ReactNode;

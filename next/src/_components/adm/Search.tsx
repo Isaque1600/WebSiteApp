@@ -45,6 +45,7 @@ export default function Search({ search, filter, columns }: Props) {
         <Button
           type="button"
           variant={"ghost"}
+          size={"icon"}
           className="px-2 text-neutral-100 hover:bg-neutral-600 hover:text-neutral-300"
           onClick={handleClick}
         >
@@ -52,6 +53,7 @@ export default function Search({ search, filter, columns }: Props) {
         </Button>
       </div>
       <Select
+        defaultValue={filter}
         onValueChange={(e) => {
           filter = e;
         }}

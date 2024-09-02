@@ -6,7 +6,7 @@ type Props = {
   children?: React.ReactNode;
   name: string;
   render: ({}: { field: ControllerRenderProps }) => React.ReactElement;
-};
+} & React.ComponentProps<typeof FormField>;
 
 export default function FormElement({
   form,
@@ -15,5 +15,7 @@ export default function FormElement({
   render,
   ...props
 }: Props) {
-  return <FormField control={form.control} name={name} render={render} />;
+  return (
+    <FormField control={form.control} name={name} render={render} {...props} />
+  );
 }

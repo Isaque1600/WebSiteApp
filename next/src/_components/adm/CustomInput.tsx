@@ -26,11 +26,12 @@ export function CustomInput({
           )}
           {...props}
           {...field}
+          id={field.name}
           placeholder=" "
         />
       </FormControl>
       <FormLabel
-        htmlFor={text}
+        htmlFor={field.name}
         data-required={required}
         className="absolute -top-3.5 left-0 p-1 pl-2 text-sm text-neutral-100 transition-all ease-in-out before:text-red-550 peer-placeholder-shown:top-1 peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-focus:-top-3.5 peer-focus:left-0 peer-focus:text-sm peer-focus:text-neutral-100 data-[required=true]:before:content-['*']"
       >

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -9,6 +11,7 @@ import {
 import { FormItem } from "@/_components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CustomInput } from "../../CustomInput";
@@ -20,6 +23,8 @@ type Props = {
 };
 
 export default function UpdateDialog({ user }: Props) {
+  const [open, setOpen] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,7 +37,7 @@ export default function UpdateDialog({ user }: Props) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="rounded-md bg-emerald-400 p-2 px-4 hover:bg-emerald-500">
         <Edit />
       </DialogTrigger>
@@ -51,7 +56,11 @@ export default function UpdateDialog({ user }: Props) {
             />
 
             <DialogFooter>
-              <CustomForm.SubmitBtn icon={<Edit />} className="gap-2 text-lg">
+              <CustomForm.SubmitBtn
+                icon={<Edit />}
+                className="gap-2 text-lg"
+                onClick={() => setOpen(false)}
+              >
                 Editar
               </CustomForm.SubmitBtn>
             </DialogFooter>

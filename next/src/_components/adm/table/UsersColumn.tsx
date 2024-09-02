@@ -157,7 +157,7 @@ export const columnsSchema: ColumnDef<Users>[] = columnsSelected.map(
           return (
             <div className="flex h-full justify-center gap-2 bg-zinc-750 p-4 text-lg text-neutral-100">
               <Dialog>
-                <DialogTrigger>
+                <DialogTrigger asChild>
                   <Button className="bg-blue-600 hover:bg-blue-700">
                     <Eye />
                   </Button>
@@ -172,7 +172,7 @@ export const columnsSchema: ColumnDef<Users>[] = columnsSelected.map(
                 </DialogContent>
               </Dialog>
               <Dialog>
-                <DialogTrigger>
+                <DialogTrigger asChild>
                   <Button className="bg-emerald-500 hover:bg-emerald-600">
                     <Edit />
                   </Button>
@@ -187,7 +187,7 @@ export const columnsSchema: ColumnDef<Users>[] = columnsSelected.map(
                 </DialogContent>
               </Dialog>
               <Dialog>
-                <DialogTrigger>
+                <DialogTrigger asChild>
                   <Button variant={"destructive"}>
                     <Trash2 />
                   </Button>

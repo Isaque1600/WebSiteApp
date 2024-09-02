@@ -120,7 +120,7 @@ export default function Usuarios({}: Props) {
       </div>
       <div>
         <div className="flex w-fit gap-4">
-          <Select onValueChange={(e) => setType(e)}>
+          <Select defaultValue={type} onValueChange={(e) => setType(e)}>
             <SelectTrigger className="w-32 border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">
               <SelectValue placeholder={type} />
             </SelectTrigger>
@@ -129,7 +129,7 @@ export default function Usuarios({}: Props) {
               <SelectItem value="contador">Contador</SelectItem>
             </SelectContent>
           </Select>
-          <Select onValueChange={(e) => setStatus(e)}>
+          <Select defaultValue={status} onValueChange={(e) => setStatus(e)}>
             <SelectTrigger className="w-32 border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">
               <SelectValue placeholder={status} />
             </SelectTrigger>

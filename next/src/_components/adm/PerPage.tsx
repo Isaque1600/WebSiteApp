@@ -19,6 +19,7 @@ export default function PerPage({ per_page }: Props) {
   return (
     <>
       <Select
+        defaultValue={per_page.toString()}
         onValueChange={(value) =>
           router.push(
             params.length > 0
