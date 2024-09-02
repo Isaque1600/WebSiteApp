@@ -37,3 +37,9 @@ Route::apiResource('admin', AdminController::class);
 Route::apiResource('systems', SystemController::class, []);
 
 Route::apiResource('theme', ThemeController::class, []);
+
+Route::get('cnpjInfo/{string:cnpj}', function (string $cnpj) {
+    $cnpj = Http::get("https://receitaws.com.br/v1/cnpj/$cnpj")->json();
+
+    return response()->json(['cnpjInfo' => $cnpj]);
+});
