@@ -41,5 +41,11 @@ Route::apiResource('theme', ThemeController::class, []);
 Route::get('cnpjInfo/{string:cnpj}', function (string $cnpj) {
     $cnpj = Http::get("https://receitaws.com.br/v1/cnpj/$cnpj")->json();
 
-    return response()->json(['cnpjInfo' => $cnpj]);
+    return response()->json($cnpj, 200);
+});
+
+Route::get('cepInfo/{string:cep}', function (string $cep) {
+    $cep = Http::get("https://viacep.com.br/ws/$cep/json/")->json();
+
+    return response()->json($cep, 200);
 });
