@@ -1,7 +1,9 @@
 "use client";
 
 import { CustomInput } from "@/_components/adm/CustomInput";
+import { CustomMaskedInput } from "@/_components/adm/CustomMaskedInput";
 import { CustomForm } from "@/_components/adm/form/Form";
+import { GetCEPInfo } from "@/_components/adm/GetCEPInfo";
 import { GetCNPJInfo } from "@/_components/adm/GetCNPJInfo";
 import { Section } from "@/_components/adm/section/Section";
 import { Button } from "@/_components/ui/button";
@@ -95,6 +97,55 @@ export default function Cadastrar({}: Props) {
     console.log(values);
   };
 
+  let formatCharsDate = {
+    D: "[0-3]",
+    d: "[0-9]",
+    m: "[0-9]",
+    M: "[01]",
+    9: "[0-9]",
+  };
+
+  const beforeMaskedValueChangeDate = (
+    newState: {
+      value: string;
+      selection: { start: number; end: number } | null;
+    },
+    oldState: {
+      value: string;
+      selection: { start: number; end: number } | null;
+    },
+    userInput: string,
+  ) => {
+    let { value } = newState;
+    const selection = newState.selection;
+    const cursorPosition = selection ? selection.start : null;
+
+    if (value.startsWith("0")) {
+      formatCharsDate["d"] = "[1-9]";
+    }
+
+    if (value.endsWith("0")) {
+      formatCharsDate["m"] = "[1-9]";
+    }
+
+    if (value.startsWith("3")) {
+      formatCharsDate["d"] = "[01]";
+    }
+
+    if (value.endsWith("1")) {
+      formatCharsDate["m"] = "[012]";
+    }
+
+    if (value[0] >= "3" && value[1] >= "0") {
+      formatCharsDate["m"] = "[012456789]";
+      if (value[3] == "0") {
+        formatCharsDate["m"] = "[12456789]";
+      }
+    }
+
+    return { value, selection: newState.selection };
+  };
+
   return (
     <Section.Root className="space-y-6">
       <Section.Title>Cadastrar Usuário</Section.Title>
@@ -160,7 +211,12 @@ export default function Cadastrar({}: Props) {
                   <div className="flex flex-row items-center gap-2">
                     <FormItem className="w-full">
                       <FormControl>
-                        <CustomInput text="CNPJ" field={field} />
+                        <CustomMaskedInput
+                          text="CNPJ"
+                          field={field}
+                          mask="99.999.999/9999-99"
+                          maskChar={""}
+                        />
                       </FormControl>
                     </FormItem>
                     <Button
@@ -169,14 +225,28 @@ export default function Cadastrar({}: Props) {
                       size={"icon"}
                       aria-label="Pesquisar CNPJ"
                       title="Pesquisar CNPJ"
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.preventDefault();
 
                         let cnpj = field.value.replaceAll(".", "");
                         cnpj = cnpj.replaceAll("/", "");
                         cnpj = cnpj.replace("-", "");
 
-                        console.log(GetCNPJInfo(cnpj));
+                        const cnpjInfo = await GetCNPJInfo(cnpj);
+
+                        if (cnpjInfo.status == 200) {
+                          form.setValue("nome", cnpjInfo?.data?.nome);
+                          form.setValue("razao", cnpjInfo?.data?.razao);
+                          form.setValue(
+                            "logradouro",
+                            cnpjInfo?.data?.logradouro,
+                          );
+                          form.setValue("numero", cnpjInfo?.data?.numero);
+                          form.setValue("bairro", cnpjInfo?.data?.bairro);
+                          form.setValue("uf", cnpjInfo?.data?.uf);
+                          form.setValue("cep", cnpjInfo?.data?.cep);
+                          form.setValue("cidade", cnpjInfo?.data?.municipio);
+                        }
                       }}
                     >
                       <Search className="text-neutral-100" />
@@ -392,8 +462,12 @@ export default function Cadastrar({}: Props) {
                     className={`w-full ${form.watch("sped").valueOf() || form.watch("nfe").valueOf() ? "" : "opacity-0"} transition duration-300 ease-in`}
                   >
                     <FormControl>
-                      <CustomInput
-                        text="Vencimento de Certificado"
+                      <CustomMaskedInput
+                        text="Vencimento do Certificado"
+                        mask="Dd/Mm/9999"
+                        maskChar=""
+                        formatChars={formatCharsDate}
+                        beforeMaskedValueChange={beforeMaskedValueChangeDate}
                         field={field}
                       />
                     </FormControl>
@@ -403,7 +477,7 @@ export default function Cadastrar({}: Props) {
             </div>
           </FormGroup>
 
-          <FormGroup className="relative flex flex-row gap-4 rounded-md border-2 border-neutral-400 p-4 py-6">
+          <FormGroup className="relative flex flex-row flex-nowrap gap-4 rounded-md border-2 border-neutral-400 p-4 py-6">
             <FormDescription className="absolute -top-4 bg-neutral-700 px-2 text-lg text-neutral-100">
               Endereço
             </FormDescription>
@@ -433,7 +507,7 @@ export default function Cadastrar({}: Props) {
               form={form}
               name="bairro"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex-grow">
                   <FormControl>
                     <CustomInput text="Bairro" field={field} />
                   </FormControl>
@@ -453,28 +527,62 @@ export default function Cadastrar({}: Props) {
             />
             <CustomForm.Field
               form={form}
-              name="cep"
+              name="uf"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="max-w-20">
                   <FormControl>
-                    <CustomInput text="CEP" field={field} />
+                    <CustomMaskedInput
+                      text="UF"
+                      field={field}
+                      mask="aa"
+                      maskChar=""
+                      className="uppercase"
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
             <CustomForm.Field
               form={form}
-              name="uf"
+              name="cep"
               render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <CustomInput
-                      text="UF"
-                      className="uppercase"
-                      field={field}
-                    />
-                  </FormControl>
-                </FormItem>
+                <div className="flex flex-row items-center gap-2">
+                  <FormItem>
+                    <FormControl>
+                      {/* <CustomInput text="CEP" field={field} /> */}
+                      <CustomMaskedInput
+                        text="CEP"
+                        field={field}
+                        mask="99999-999"
+                        maskChar=""
+                      />
+                    </FormControl>
+                  </FormItem>
+                  <Button
+                    variant={"ghost"}
+                    className="cursor-pointer hover:bg-neutral-500 hover:text-neutral-100"
+                    size={"icon"}
+                    aria-label="Pesquisar CEP"
+                    title="Pesquisar CEP"
+                    onClick={async (e) => {
+                      e.preventDefault();
+
+                      let cep = form.getValues("cep").replace("-", "");
+
+                      const cepInfo = await GetCEPInfo(cep);
+
+                      if (cepInfo.status == 200) {
+                        form.setValue("logradouro", cepInfo?.data?.logradouro);
+                        form.setValue("numero", cepInfo?.data?.numero);
+                        form.setValue("bairro", cepInfo?.data?.bairro);
+                        form.setValue("cidade", cepInfo?.data?.localidade);
+                        form.setValue("uf", cepInfo?.data?.uf);
+                      }
+                    }}
+                  >
+                    <Search className="text-neutral-100" />
+                  </Button>
+                </div>
               )}
             />
           </FormGroup>
@@ -490,7 +598,7 @@ export default function Cadastrar({}: Props) {
                   <FormControl>
                     <Textarea
                       {...field}
-                      className="border-2 border-neutral-400 text-lg text-neutral-100"
+                      className="min-h-44 border-2 border-neutral-400 text-lg text-neutral-100"
                     ></Textarea>
                   </FormControl>
                 </div>
