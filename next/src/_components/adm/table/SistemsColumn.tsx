@@ -46,7 +46,7 @@ export const columnsSchema: ColumnDef<Systems>[] = [
 
       return (
         <div className="flex h-16 items-center justify-center gap-2 bg-zinc-750 p-2 text-lg text-neutral-100">
-          <UpdateDialog user={user} />
+          <UpdateDialog></UpdateDialog>
           <DeleteDialog user={user} />
         </div>
       );

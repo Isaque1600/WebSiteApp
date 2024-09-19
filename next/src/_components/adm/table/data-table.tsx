@@ -125,7 +125,7 @@ export function DataTable<TData, TValue>({
                     return (
                       <TableHead
                         key={header.id}
-                        className="rounded-lg px-0.5 [&>div]:first:rounded-tl-md [&>div]:last:rounded-tr-md"
+                        className="h-12 rounded-lg px-0.5 [&>div]:first:rounded-tl-md [&>div]:last:rounded-tr-md"
                       >
                         {header.isPlaceholder
                           ? null
@@ -148,7 +148,10 @@ export function DataTable<TData, TValue>({
                     className="border-none hover:bg-transparent [&>td:first-child>div]:last:rounded-bl-md [&>td:last-child>div]:last:rounded-br-md [&>td>div]:even:bg-zinc-725"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="p-0.5 text-center">
+                      <TableCell
+                        key={cell.id}
+                        className="h-24 p-0.5 text-center"
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),

@@ -1,17 +1,11 @@
 "use client";
 
-import { Button } from "@/_components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/_components/ui/dialog";
+import { DialogDescription } from "@/_components/ui/dialog";
 import { Loader2, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { CustomDialog } from "./CustomDialog/CustomDialog";
+import CustomDialogHeader from "./CustomDialog/CustomDialogHeader";
+import CustomDialogTrigger from "./CustomDialog/CustomDialogTrigger";
 
 type Props = {
   user: any;
@@ -22,21 +16,19 @@ export default function DeleteDialog({ user }: Props) {
   const [loading, setLoading] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="rounded-md bg-red-500 p-2 px-4 hover:bg-red-600">
+    <CustomDialog.Root open={open} onOpenChange={setOpen}>
+      <CustomDialogTrigger className="p-2 px-4">
         <Trash2 />
-      </DialogTrigger>
-      <DialogContent className="border-zinc-750 bg-zinc-750 text-neutral-100">
-        <DialogHeader>
-          <DialogTitle className="mb-4">
-            Você tem certeza que deseja deletar esse registro?
-          </DialogTitle>
-          <DialogDescription className="text-neutral-400">
-            Essa ação é irreversível, não pode ser desfeita!
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
+      </CustomDialogTrigger>
+      <CustomDialog.Content>
+        <CustomDialogHeader text="Você tem certeza que deseja deletar esse registro?" />
+        <DialogDescription>
+          Essa ação é irreversível, não pode ser desfeita!
+        </DialogDescription>
+
+        <div className="flex w-full justify-end">
+          <CustomDialog.CustomCloseBtn
+            className="gap-2 bg-red-650 text-lg hover:bg-red-700"
             onClick={() => {
               console.log(user);
 
@@ -49,13 +41,19 @@ export default function DeleteDialog({ user }: Props) {
                 return;
               }, 2000);
             }}
-            type="submit"
-            variant={"destructive"}
+            disabled={loading}
           >
-            {loading ? <Loader2 className="animate-spin" /> : "Deletar"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            {loading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <>
+                <Trash2 />
+                <p>Deletar</p>
+              </>
+            )}
+          </CustomDialog.CustomCloseBtn>
+        </div>
+      </CustomDialog.Content>
+    </CustomDialog.Root>
   );
 }

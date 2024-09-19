@@ -3,6 +3,7 @@
 import { CustomInput } from "@/_components/adm/CustomInput";
 import { CustomMaskedInput } from "@/_components/adm/CustomMaskedInput";
 import { CustomForm } from "@/_components/adm/form/Form";
+import { usersFormSchema } from "@/_components/adm/FormSchemas";
 import { GetCEPInfo } from "@/_components/adm/GetCEPInfo";
 import { GetCNPJInfo } from "@/_components/adm/GetCNPJInfo";
 import { Section } from "@/_components/adm/section/Section";
@@ -34,36 +35,8 @@ export default function Cadastrar({}: Props) {
     return () => {};
   }, []);
 
-  const formSchema = z.object({
-    nome: z.string(),
-    razao: z.string().min(1, "Razão social obrigatória"),
-    logradouro: z.string(),
-    numero: z.string(),
-    bairro: z.string(),
-    cidade: z.string(),
-    cep: z.string(),
-    uf: z.string(),
-    cnpj: z.string(),
-    ie: z.string(),
-    contato: z.string(),
-    sistema: z.string(),
-    serial: z.string(),
-    obs: z.string(),
-    ven_cert: z.string(),
-    email: z.string(),
-    situacao: z.boolean(),
-    tef: z.boolean(),
-    nfe: z.boolean(),
-    sped: z.boolean(),
-    contador: z.string(),
-    email_backup: z.string(),
-    senha_backup: z.string(),
-    tipo: z.string(),
-    senha: z.string(),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof usersFormSchema>>({
+    resolver: zodResolver(usersFormSchema),
     defaultValues: {
       nome: "",
       razao: "",
@@ -93,7 +66,7 @@ export default function Cadastrar({}: Props) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof usersFormSchema>) => {
     console.log(values);
   };
 

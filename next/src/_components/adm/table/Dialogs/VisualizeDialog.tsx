@@ -1,6 +1,6 @@
 "use client";
 
-import { Edit } from "lucide-react";
+import { Eye } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { CustomDialog } from "./CustomDialog/CustomDialog";
 
@@ -11,7 +11,7 @@ type Props = {
   contentClassName?: string;
 };
 
-export default function UpdateDialog({
+export default function VisualizeDialog({
   dialogOpen,
   setDialogOpen,
   children,
@@ -19,8 +19,8 @@ export default function UpdateDialog({
 }: Props) {
   return (
     <CustomDialog.Root open={dialogOpen} onOpenChange={setDialogOpen}>
-      <CustomDialog.Trigger className="rounded-md bg-emerald-400 p-2 px-4 hover:bg-emerald-500">
-        <Edit />
+      <CustomDialog.Trigger className="rounded-md bg-blue-600 p-2 px-4 hover:bg-blue-700">
+        <Eye />
       </CustomDialog.Trigger>
       <CustomDialog.Content
         className={twMerge(
@@ -28,7 +28,7 @@ export default function UpdateDialog({
           contentClassName,
         )}
       >
-        <CustomDialog.Header text="Editar" />
+        <CustomDialog.Header text="Visualizar" />
         {children}
       </CustomDialog.Content>
     </CustomDialog.Root>
