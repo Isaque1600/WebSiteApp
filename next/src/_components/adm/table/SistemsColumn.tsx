@@ -1,6 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
 import DeleteDialog from "./Dialogs/DeleteDialog";
-import UpdateDialog from "./Dialogs/UpdateDialog";
 
 export type Systems = {
   id: number;
@@ -46,7 +45,7 @@ export const columnsSchema: ColumnDef<Systems>[] = [
 
       return (
         <div className="flex h-16 items-center justify-center gap-2 bg-zinc-750 p-2 text-lg text-neutral-100">
-          <UpdateDialog></UpdateDialog>
+          {/* <UpdateDialog ></UpdateDialog> */}
           <DeleteDialog user={user} />
         </div>
       );

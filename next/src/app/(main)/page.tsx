@@ -9,7 +9,7 @@ export default function Index() {
           <a
             className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}
-            href="#"
+            href={`${process.env.BASEPATH}/file/download/../*`}
           >
             Team Viewer 13
           </a>

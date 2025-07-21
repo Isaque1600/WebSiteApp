@@ -2,7 +2,7 @@
 
 import { CustomInput } from "@/_components/adm/CustomInput";
 import { CustomForm } from "@/_components/adm/form/Form";
-import { formSchema } from "@/_components/adm/FormSchemas";
+import { systemFormSchema as formSchema } from "@/_components/adm/FormSchemas";
 import { Section } from "@/_components/adm/section/Section";
 import { FormItem } from "@/_components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
