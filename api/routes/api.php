@@ -49,3 +49,13 @@ Route::get('cepInfo/{string:cep}', function (string $cep) {
 
     return response()->json($cep, 200);
 });
+
+Route::get('file/download/{string:filename}', function (string $filename) {
+    $filePath = storage_path("app/public/$filename");
+
+    if (!file_exists($filePath)) {
+        return response()->json(['error' => 'File not found'], 404);
+    }
+
+    return response()->download($filePath);
+});

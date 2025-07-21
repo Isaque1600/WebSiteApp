@@ -31,7 +31,7 @@ class ThemeController
             return response()->json(['data' => $theme, 'message' => 'success'], 201);
         }
 
-        return response()->json(['message' => 'User is not a admin!'], 403);
+        return response()->json(['message' => 'User is not a admin!'], 401);
     }
 
     /**

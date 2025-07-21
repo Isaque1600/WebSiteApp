@@ -30,11 +30,15 @@ class AuthController extends Controller implements HasMiddleware
 
         $user = User::where('login', $credentials['login'])->first();
 
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 401);
+        }
+
         if (!$user->validatePassword($credentials['senha'])) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        $token = auth()->login($user);
+        $token = auth()?->login($user);
 
         return $this->respondWithToken($token);
     }
@@ -46,7 +50,8 @@ class AuthController extends Controller implements HasMiddleware
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user();
+        return response()->json(["id" => $user->id, "login" => $user->login, "type" => $user->type]);
     }
 
     /**
