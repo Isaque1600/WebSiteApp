@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePersonRequest;
-use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdatePersonRequest;
-use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\PersonResource;
 use App\Http\Resources\UserResource;
 use App\Models\Person;
 use App\Models\User;
 use Crypt;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PersonController extends Controller
+class PersonController extends Controller implements HasMiddleware
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -27,13 +28,13 @@ class PersonController extends Controller
         switch ($type) {
             case "cliente":
                 if (!empty($search)) {
-                    return PersonResource::collection(Person::where($filter, 'like', "%{$search}%")->where('tipo', '=', 'cliente')->orderBy($filter)->paginate($per_page));
+                    return PersonResource::collection(Person::where($filter, 'like', "%{$search}%")->where('tipo', '<>', 'contador')->orderBy($filter)->paginate($per_page));
                 }
 
                 return PersonResource::collection(Person::orderBy('nome')->paginate($per_page)->where('tipo', '=', 'cliente'));
             case "contador":
                 if (!empty($search)) {
-                    return UserResource::collection(User::where($filter, 'like', "%{$search}%")->where('tipo', '=', 'cliente')->orderBy($filter)->paginate($per_page));
+                    return UserResource::collection(User::where($filter, 'like', "%{$search}%")->where('tipo', '=', 'contador')->orderBy($filter)->paginate($per_page));
                 }
 
                 return UserResource::collection(User::paginate($per_page)->where('type', '=', 'contador'));
@@ -104,5 +105,15 @@ class PersonController extends Controller
         $person = Person::findOrFail($id)->deleteOrFail();
 
         return response()->json(['message' => 'success'], 204);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function middleware()
+    {
+        return [
+            new Middleware('auth:api'),
+        ];
     }
 }
