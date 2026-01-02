@@ -14,7 +14,7 @@ class PersonSeeder extends Seeder
      */
     public function run(): void
     {
-        Person::factory()->count(10)->afterCreating(function (Person $person) {
+        Person::factory()->count(50)->afterCreating(function (Person $person) {
             if ($person->tipo === 'contador') {
                 User::factory()->create([
                     'login' => $person->nome,

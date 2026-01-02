@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Person;
 use App\Models\User;
 use Crypt;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
@@ -18,27 +19,29 @@ class PersonController extends Controller implements HasMiddleware
 
     /**
      * Display a listing of the resource.
+     * 
      */
     public function index(Request $request, string $type)
     {
         $search = $request->search ?? '';
         $filter = $request->filter ?? 'nome';
         $per_page = $request->per_page ?? 25;
+        $page = $request->page ?? 1;
 
-        switch ($type) {
-            case "cliente":
-                if (!empty($search)) {
-                    return PersonResource::collection(Person::where($filter, 'like', "%{$search}%")->where('tipo', '<>', 'contador')->orderBy($filter)->paginate($per_page));
-                }
+        $query = Person::where('tipo', '=', $type)
+            ->where($filter, 'like', "%$search%")->with('user')
+            ->orderBy($filter)->paginate($per_page, page: $page);
 
-                return PersonResource::collection(Person::orderBy('nome')->paginate($per_page)->where('tipo', '=', 'cliente'));
-            case "contador":
-                if (!empty($search)) {
-                    return UserResource::collection(User::where($filter, 'like', "%{$search}%")->where('tipo', '=', 'contador')->orderBy($filter)->paginate($per_page));
-                }
+        $res = match ($type) {
+            'cliente'  => PersonResource::collection($query),
+            'contador' => PersonResource::collection($query),
+        };
 
-                return UserResource::collection(User::paginate($per_page)->where('type', '=', 'contador'));
-        }
+        return $res->additional([
+            'meta' => [
+                'hasMore' => $query->hasMorePages(),
+            ],
+        ]);
     }
 
     /**
@@ -66,7 +69,7 @@ class PersonController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      */
-    public function show(string $type, string $id)
+    public function show(string $id)
     {
         return new PersonResource(Person::findOrFail($id));
     }
@@ -89,7 +92,7 @@ class PersonController extends Controller implements HasMiddleware
                 $person->user->update(['situation' => $person->situacao, 'login' => $person->nome, 'loginTime' => now()]);
 
                 if ($request->senha) {
-                    $person->user->update(['senha' => encrypt($request->senha)]);
+                    $person->user->update(['senha' => Crypt::encrypt($request->senha)]);
                 }
 
                 return new UserResource($person->user);
@@ -100,9 +103,9 @@ class PersonController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $type, string $id)
+    public function destroy(string $id)
     {
-        $person = Person::findOrFail($id)->deleteOrFail();
+        Person::findOrFail($id)->deleteOrFail();
 
         return response()->json(['message' => 'success'], 204);
     }

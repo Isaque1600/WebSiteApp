@@ -1,8 +1,9 @@
 "use client";
 
 import api from "@/lib/axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import Cookies from "js-cookie";
-import { useState } from "react";
 
 type AuthResponse = {
   access_token: string;
@@ -13,71 +14,102 @@ type AuthResponse = {
 type AuthMe = {
   id: number;
   login: string;
-  type: "admin" | "accountant";
+  type: "admin" | "contador";
 };
 
+async function loginReq(email: string, password: string): Promise<boolean> {
+  try {
+    const response = await api.post<AuthResponse>("/auth/login", {
+      login: email,
+      senha: password,
+    });
+    Cookies.set("authToken", response.data.access_token);
+
+    return true;
+  } catch (err: any) {
+    throw err;
+  }
+}
+
+async function logoutReq(): Promise<boolean> {
+  try {
+    await api.post("/auth/logout");
+    Cookies.remove("authToken");
+    return true;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function fetchMe(): Promise<AuthMe> {
+  try {
+    const response = await api.get<AuthMe>("/auth/me");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+const USER_DATA_QUERY_KEY = ["user_profile"];
+
 export const useAuth = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await api.post<AuthResponse>("/auth/login", {
-        login: email,
-        senha: password,
-      });
-      Cookies.set("authToken", response.data.access_token);
+  const login = () =>
+    useMutation({
+      mutationFn: ({ email, password }: { email: string; password: string }) =>
+        loginReq(email, password),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: USER_DATA_QUERY_KEY });
+      },
+      onError: () => {
+        queryClient.setQueryData(USER_DATA_QUERY_KEY, null);
+      },
+    });
 
-      return true;
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Login failed");
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const logout = () =>
+    useMutation({
+      mutationFn: () => logoutReq(),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: USER_DATA_QUERY_KEY });
+      },
+    });
 
-  const logout = async (): Promise<boolean> => {
-    setLoading(true);
-    setError(null);
-    try {
-      await api.post("/auth/logout");
-      console.log(api.interceptors);
-      Cookies.remove("authToken");
-      return true;
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Logout failed");
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const me = async (): Promise<AuthMe | void> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await api.get<AuthMe>("/auth/me");
-      return response.data;
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to fetch user");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const me = () =>
+    useQuery({
+      queryKey: USER_DATA_QUERY_KEY,
+      queryFn: async () => fetchMe(),
+      staleTime: 1000 * 60 * 10,
+      retry: (failureCount, error) => {
+        if (failureCount >= 3) return false;
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 401) return false;
+        }
+        return true;
+      },
+    });
 
   const getAuthToken = () => Cookies.get("authToken");
 
-  const isLoggedIn = !!getAuthToken();
+  const checkLoggedIn = () => {
+    if (!getAuthToken()) {
+      return false;
+    }
+
+    const userData = queryClient.getQueryData<AuthMe>(USER_DATA_QUERY_KEY);
+    if (!userData) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const isLoggedIn = checkLoggedIn();
 
   return {
     login,
     logout,
     me,
     isLoggedIn,
-    loading,
-    error,
   };
 };

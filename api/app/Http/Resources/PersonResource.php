@@ -14,7 +14,7 @@ class PersonResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $personData = [
             'cod_pes' => $this->cod_pes,
             'nome' => mb_convert_case($this->nome, MB_CASE_TITLE, "UTF-8"),
             'razao' => $this->razao,
@@ -40,5 +40,18 @@ class PersonResource extends JsonResource
             'email_backup' => $this->email_backup,
             'senha_backup' => $this->senha_backup,
         ];
+
+        if ($this->user) {
+            $userData = [
+                'user_id' => $this->user->id,
+                'login' => $this->user->login,
+                'user_situation' => $this->user->situation,
+                'user_type' => $this->user->type,
+                'login_time' => $this->user->loginTime?->format('d/m/Y H:i:s'),
+            ];
+            $personData = array_merge($personData, $userData);
+        }
+
+        return $personData;
     }
 }

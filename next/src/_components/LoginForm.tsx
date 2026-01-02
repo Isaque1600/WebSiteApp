@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "./ui/button";
@@ -12,8 +13,27 @@ import { Input } from "./ui/input";
 import { InputToggle } from "./ui/inputToggle";
 
 export function LoginForm() {
-  const { login, me, loading, error } = useAuth();
+  const { login: loginMutation, me } = useAuth();
+  const {
+    mutateAsync: login,
+    isSuccess,
+    isPending,
+    error,
+    isError,
+  } = loginMutation();
+  const { data: userData, isLoading } = me();
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (isSuccess && !isLoading) {
+      if (userData?.type === "admin") {
+        router.push("/admin");
+      } else if (userData?.type === "contador") {
+        router.push("/contador");
+      }
+    }
+  }, [isSuccess, userData, isLoading]);
 
   const formSchema = z.object({
     login: z
@@ -36,21 +56,10 @@ export function LoginForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("Submitting login form with values:", values);
-    const isLogged = await login(values.login, values.password);
-    if (!isLogged) {
-      return;
-    }
-    const user = await me();
-    if (!user) {
-      return;
-    }
-    if (user.type === "admin") {
-      router.push("/admin");
-    }
-    if (user.type === "accountant") {
-      router.push("/contador");
-    }
+    await login({
+      email: values.login,
+      password: values.password,
+    });
   };
 
   const inputClassName = "bg-slate-300 text-slate-800 border-slate-300";
@@ -62,9 +71,9 @@ export function LoginForm() {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <h1 className="text-red-750 text-3xl font-bold">Área Restrita</h1>
-        {error && (
+        {isError && (
           <p className="text-sm text-red-600">
-            {error || "Erro ao fazer login"}
+            {error.message || "Erro ao fazer login"}
           </p>
         )}
         <FormField
@@ -98,7 +107,7 @@ export function LoginForm() {
           )}
         />
         <Button className="w-fit bg-red-650 hover:bg-red-700" type="submit">
-          {loading ? <Loader2 className="animate-spin" /> : "Entrar"}
+          {isPending ? <Loader2 className="animate-spin" /> : "Entrar"}
         </Button>
       </form>
     </Form>

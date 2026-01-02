@@ -7,7 +7,6 @@ use App\Http\Controllers\PersonController;
 use App\Http\Controllers\SystemController;
 use App\Http\Controllers\ThemeController;
 use App\Http\Controllers\UserColumnController;
-use App\Http\Middleware\JWTCheckToken;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -24,9 +23,10 @@ Route::group([
 Route::middleware(['auth:api', RoleMiddleware::class . ':admin'])->group(function () {
     Route::prefix('person')->group(function () {
         Route::get('{type}', [PersonController::class, 'index']);
+        Route::get('{id}', [PersonController::class, 'show']);
         Route::post('{type}', [PersonController::class, 'store']);
         Route::match(['put', 'patch'], '{type}/{id}', [PersonController::class, 'update']);
-        Route::delete('{type}/{id}', [PersonController::class, 'destroy']);
+        Route::delete('{id}', [PersonController::class, 'destroy']);
     });
 
     Route::apiResource('userColumns', UserColumnController::class, []);

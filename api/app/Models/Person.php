@@ -70,9 +70,9 @@ class Person extends Model
     /**
      * Get the User associated with the Person.
      *
-     * @return array<string, string>
+     * @return HasOne
      */
-    protected function user(): HasOne
+    public function user(): HasOne
     {
         return $this->hasOne(User::class, "person_id", "cod_pes");
     }

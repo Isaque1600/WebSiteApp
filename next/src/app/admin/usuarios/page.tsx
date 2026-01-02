@@ -1,7 +1,6 @@
 "use client";
 
 import { Section } from "@/_components/adm/section/Section";
-import { Users } from "@/_components/adm/table/UsersColumn";
 import { DataTable } from "@/_components/adm/table/data-table";
 import {
   Select,
@@ -10,79 +9,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/_components/ui/select";
+import { Skeleton } from "@/_components/ui/skeleton";
+import { usePerson } from "@/hooks/Person/usePerson";
 import { UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Props = {};
 
-const data: Users[] = [
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "2",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "3",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "4",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "5",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-  {
-    cod_pes: "1",
-    nome: "João",
-    situacao: "Ativo",
-  },
-];
-
 export default function Usuarios({}: Props) {
-  const [type, setType] = useState("cliente");
-  const [status, setStatus] = useState("ativo");
+  const [type, setType] = useState<"cliente" | "contador">("cliente");
+  const [status, setStatus] = useState<"ativo" | "inativo">("ativo");
   const searchParams = useSearchParams();
 
   const page = searchParams.get("page") || "1";
@@ -90,13 +28,23 @@ export default function Usuarios({}: Props) {
   const filter = searchParams.get("filter") || "nome";
   const perPage = searchParams.get("per_page") || "25";
 
-  useEffect(() => {
-    const url = `api/admin/usuarios/${type}?page=${page}&search=${search}&filter=${filter}&per_page=${perPage}&status=${status}`;
-
-    console.log("data fetched");
-
-    return;
-  }, [type, status, page, search, filter, perPage]);
+  const { get, prefetchNextPage } = usePerson();
+  const { data, isLoading } = get({
+    type,
+    status,
+    page,
+    per_page: perPage,
+    search_by: filter,
+    search,
+  });
+  prefetchNextPage({
+    page,
+    per_page: perPage,
+    search_by: filter,
+    search,
+    type,
+    status,
+  });
 
   //-TODO - SS Pagination
   //-TODO - Search
@@ -120,7 +68,10 @@ export default function Usuarios({}: Props) {
       </div>
       <div>
         <div className="flex w-fit gap-4">
-          <Select defaultValue={type} onValueChange={(e) => setType(e)}>
+          <Select
+            defaultValue={type}
+            onValueChange={(e) => setType(e as "cliente" | "contador")}
+          >
             <SelectTrigger className="w-32 border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">
               <SelectValue placeholder={type} />
             </SelectTrigger>
@@ -129,7 +80,10 @@ export default function Usuarios({}: Props) {
               <SelectItem value="contador">Contador</SelectItem>
             </SelectContent>
           </Select>
-          <Select defaultValue={status} onValueChange={(e) => setStatus(e)}>
+          <Select
+            defaultValue={status}
+            onValueChange={(e) => setStatus(e as "ativo" | "inativo")}
+          >
             <SelectTrigger className="w-32 border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">
               <SelectValue placeholder={status} />
             </SelectTrigger>
@@ -140,15 +94,19 @@ export default function Usuarios({}: Props) {
             </SelectContent>
           </Select>
         </div>
-        <DataTable
-          data={data}
-          page={parseInt(page)}
-          pages={[1, 2, 3]}
-          search={search}
-          searchColumns={["nome"]}
-          filter={filter}
-          per_page={parseInt(perPage)}
-        />
+        {isLoading ? (
+          <Skeleton></Skeleton>
+        ) : (
+          <DataTable
+            data={data.data}
+            page={parseInt(page)}
+            pages={Array.from({ length: data.meta.last_page }, (_, i) => i + 1)}
+            search={search}
+            searchColumns={["nome"]}
+            filter={filter}
+            per_page={parseInt(perPage)}
+          />
+        )}
       </div>
     </Section.Root>
   );
