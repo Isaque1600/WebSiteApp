@@ -11,7 +11,7 @@ type Props = {
 
 export default function AdminLayout({ children }: Props) {
   const { isLoggedIn, me } = useAuth();
-  const { data: userData, isLoading } = me();
+  const { data: userData } = me();
 
   if (!isLoggedIn) {
     toast.error("Você precisa estar logado para acessar esta área.");

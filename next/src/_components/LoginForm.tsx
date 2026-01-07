@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "./ui/button";
 import { Form, FormControl, FormField, FormItem } from "./ui/form";
@@ -27,13 +28,22 @@ export function LoginForm() {
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
+      toast.success("Login realizado com sucesso!", {
+        id: "success",
+        position: "top-center",
+      });
+      toast.dismiss("loading");
       if (userData?.type === "admin") {
         router.push("/admin");
       } else if (userData?.type === "contador") {
         router.push("/contador");
       }
     }
-  }, [isSuccess, userData, isLoading]);
+
+    if (isError) {
+      toast.dismiss("loading");
+    }
+  }, [isSuccess, userData, isLoading, isError]);
 
   const formSchema = z.object({
     login: z
@@ -106,7 +116,16 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button className="w-fit bg-red-650 hover:bg-red-700" type="submit">
+        <Button
+          className="w-fit bg-red-650 hover:bg-red-700"
+          type="submit"
+          onClick={(e) => {
+            toast.loading("Entrando...", {
+              id: "loading",
+              position: "top-center",
+            });
+          }}
+        >
           {isPending ? <Loader2 className="animate-spin" /> : "Entrar"}
         </Button>
       </form>

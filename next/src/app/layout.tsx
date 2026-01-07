@@ -13,10 +13,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReactQueryProvider>
-          {children}
-          <Toaster />
-        </ReactQueryProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+        <Toaster position="bottom-right" />
       </body>
     </html>
   );
