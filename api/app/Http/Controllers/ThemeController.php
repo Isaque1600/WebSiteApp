@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateThemeRequest;
 use App\Http\Resources\ThemeResource;
 use App\Models\Theme;
 use App\Models\User;
-use App\Models\UserColumn;
 
 class ThemeController
 {

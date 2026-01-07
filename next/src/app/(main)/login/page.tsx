@@ -8,30 +8,19 @@ import { useEffect } from "react";
 
 export default function Login() {
   const { isLoggedIn, me } = useAuth();
+  const { data: userData, isLoading } = me();
+
   const router = useRouter();
 
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      if (isLoggedIn) {
-        try {
-          const user = await me();
-          if (!user) {
-            throw new Error("User not found");
-          }
-
-          if (user.type == "admin") {
-            router.push("/admin");
-          }
-          if (user.type == "accountant") {
-            router.push("/contador");
-          }
-        } catch (error) {
-          return;
-        }
+    if (!isLoading && isLoggedIn) {
+      if (userData?.type === "admin") {
+        router.push("/admin");
+      } else {
+        router.push("/");
       }
-    };
-    checkLoginStatus();
-  }, []);
+    }
+  }, [isLoading, userData]);
 
   return (
     <Main className="items-center justify-center">

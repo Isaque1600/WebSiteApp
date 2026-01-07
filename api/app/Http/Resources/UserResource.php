@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Crypt;
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,12 +16,12 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'login' => $this->login,
+            'cod_pes' => $this->id,
+            'nome' => $this->login,
             'senha' => Crypt::decrypt($this->senha),
             'loginTime' => $this->loginTime?->format('d/m/Y H:i:s'),
-            'situation' => $this->situation,
-            'type' => $this->type,
+            'situacao' => $this->situacao,
+            'tipo' => $this->type,
             'person' => PersonResource::collection($this->person()->get()),
         ];
     }

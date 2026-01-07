@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '3ce3364581bfe0bf42659738bd31d24fa27ab35e',
+        'reference' => '2a4ed1339c10a9a7ece098a0c3adddcad9a1eacb',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -382,7 +382,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '3ce3364581bfe0bf42659738bd31d24fa27ab35e',
+            'reference' => '2a4ed1339c10a9a7ece098a0c3adddcad9a1eacb',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -591,6 +591,12 @@
             'install_path' => __DIR__ . '/../nunomaduro/termwind',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'pclzip/pclzip' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '2.8.2',
+            ),
         ),
         'phar-io/manifest' => array(
             'pretty_version' => '2.0.4',
@@ -1310,6 +1316,21 @@
             'reference' => 'b56450eed252f6801410d810c8e1727224ae0743',
             'type' => 'library',
             'install_path' => __DIR__ . '/../voku/portable-ascii',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'wapmorgan/cam' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '1.0.2',
+            ),
+        ),
+        'wapmorgan/unified-archive' => array(
+            'pretty_version' => '1.3.0',
+            'version' => '1.3.0.0',
+            'reference' => '34d342f9735f00e0d6b58f1028965b6e66e018b7',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../wapmorgan/unified-archive',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

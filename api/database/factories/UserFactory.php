@@ -21,13 +21,13 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    public function definition(string $userName = '', string $password = '', string $situation = '', string $type = ''): array
     {
         return [
-            'login' => fake()->userName(),
-            'senha' => static::$password ??= Crypt::encrypt('password'),
-            'situation' => fake()->randomElement(['active', 'inactive']),
-            'type' => fake()->randomElement(['accountant', 'admin']),
+            'login' => $userName ?: fake()->userName(),
+            'senha' => static::$password ??= Crypt::encrypt($password ?: 'password'),
+            'situation' => $situation ?: fake()->randomElement(['active', 'inactive']),
+            'type' => $type ?: fake()->randomElement(['contador', 'admin']),
         ];
     }
 

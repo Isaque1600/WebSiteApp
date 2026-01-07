@@ -16,6 +16,7 @@ import {
 } from "@/_components/ui/select";
 import { Switch } from "@/_components/ui/switch";
 import { Textarea } from "@/_components/ui/textarea";
+import { Person } from "@/types/Person";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormGroup } from "@mui/material";
 import { ColumnDef } from "@tanstack/react-table";
@@ -33,33 +34,6 @@ import { CustomDialog } from "./Dialogs/CustomDialog/CustomDialog";
 import DeleteDialog from "./Dialogs/DeleteDialog";
 import UpdateDialog from "./Dialogs/UpdateDialog";
 import VisualizeDialog from "./Dialogs/VisualizeDialog";
-
-export type Users = {
-  cod_pes?: string;
-  nome?: string;
-  razao?: string;
-  logradouro?: string;
-  numero?: string;
-  bairro?: string;
-  cidade?: string;
-  cep?: string;
-  uf?: string;
-  ie?: string;
-  contato?: string;
-  sistema?: string;
-  serial?: string;
-  obs?: string;
-  ven_cert?: string;
-  email?: string;
-  situacao?: string;
-  tef?: string;
-  nfe?: string;
-  sped?: string;
-  contador?: string;
-  email_backup?: string;
-  senha_backup?: string;
-  tipo?: string;
-};
 
 const columnsSelected = [
   "cod_pes",
@@ -90,7 +64,7 @@ const columnsSelected = [
   "ações",
 ];
 
-export const columnsSchema: ColumnDef<Users>[] = columnsSelected.map(
+export const columnsSchema: ColumnDef<Person>[] = columnsSelected.map(
   (element) => {
     if (element == "cod_pes") {
       return {

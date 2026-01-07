@@ -40,6 +40,10 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
     );
 
     public static $prefixLengthsPsr4 = array (
+        'w' => 
+        array (
+            'wapmorgan\\UnifiedArchive\\' => 25,
+        ),
         'v' => 
         array (
             'voku\\' => 5,
@@ -179,6 +183,10 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
     );
 
     public static $prefixDirsPsr4 = array (
+        'wapmorgan\\UnifiedArchive\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/wapmorgan/unified-archive/src',
+        ),
         'voku\\' => 
         array (
             0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
@@ -531,6 +539,7 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
         'App\\Http\\Controllers\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/AdminController.php',
         'App\\Http\\Controllers\\Auth\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\FileController' => __DIR__ . '/../..' . '/app/Http/Controllers/FileController.php',
         'App\\Http\\Controllers\\PersonController' => __DIR__ . '/../..' . '/app/Http/Controllers/PersonController.php',
         'App\\Http\\Controllers\\SystemController' => __DIR__ . '/../..' . '/app/Http/Controllers/SystemController.php',
         'App\\Http\\Controllers\\ThemeController' => __DIR__ . '/../..' . '/app/Http/Controllers/ThemeController.php',
@@ -6659,6 +6668,61 @@ class ComposerStaticInit7e8c3c14ff33b199b4a0838993eb8423
         'Whoops\\Util\\SystemFacade' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/SystemFacade.php',
         'Whoops\\Util\\TemplateHelper' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/TemplateHelper.php',
         'voku\\helper\\ASCII' => __DIR__ . '/..' . '/voku/portable-ascii/src/voku/helper/ASCII.php',
+        'wapmorgan\\UnifiedArchive\\Abilities' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Abilities.php',
+        'wapmorgan\\UnifiedArchive\\Archive7z' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Archive7z.php',
+        'wapmorgan\\UnifiedArchive\\ArchiveEntry' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/ArchiveEntry.php',
+        'wapmorgan\\UnifiedArchive\\ArchiveInformation' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/ArchiveInformation.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\AddFileCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/AddFileCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\BaseArchiveCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/BaseArchiveCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\BaseCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/BaseCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\BaseFileCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/BaseFileCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\CommentCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/CommentCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\CreateCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/CreateCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\DeleteFileCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/DeleteFileCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\DetailsCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/DetailsCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\DriversCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/DriversCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\ExtractArchiveCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/ExtractArchiveCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\ExtractFileCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/ExtractFileCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\ExtractFilesCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/ExtractFilesCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\FoldersCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/FoldersCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\FormatCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/FormatCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\FormatsCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/FormatsCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\InfoCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/InfoCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\ListCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/ListCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\PrintCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/PrintCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\TableCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/TableCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\TestCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/TestCommand.php',
+        'wapmorgan\\UnifiedArchive\\Commands\\TypesCommand' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Commands/TypesCommand.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\AlchemyZippy' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/AlchemyZippy.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Basic\\BasicDriver' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Basic/BasicDriver.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Basic\\BasicExtensionDriver' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Basic/BasicExtensionDriver.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Basic\\BasicPureDriver' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Basic/BasicPureDriver.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Basic\\BasicUtilityDriver' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Basic/BasicUtilityDriver.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Cab' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Cab.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Iso' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Iso.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\NelexaZip' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/NelexaZip.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\OneFile\\Bzip' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/OneFile/Bzip.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\OneFile\\Gzip' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/OneFile/Gzip.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\OneFile\\Lzma' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/OneFile/Lzma.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\OneFile\\OneFileDriver' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/OneFile/OneFileDriver.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Rar' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Rar.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\SevenZip' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/SevenZip.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\SplitbrainPhpArchive' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/SplitbrainPhpArchive.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\TarByPear' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/TarByPear.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\TarByPhar' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/TarByPhar.php',
+        'wapmorgan\\UnifiedArchive\\Drivers\\Zip' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Drivers/Zip.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\ArchiveCreationException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/ArchiveCreationException.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\ArchiveExtractionException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/ArchiveExtractionException.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\ArchiveModificationException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/ArchiveModificationException.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\EmptyFileListException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/EmptyFileListException.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\FileAlreadyExistsException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/FileAlreadyExistsException.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\NonExistentArchiveFileException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/NonExistentArchiveFileException.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\UnsupportedArchiveException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/UnsupportedArchiveException.php',
+        'wapmorgan\\UnifiedArchive\\Exceptions\\UnsupportedOperationException' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Exceptions/UnsupportedOperationException.php',
+        'wapmorgan\\UnifiedArchive\\Formats' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/Formats.php',
+        'wapmorgan\\UnifiedArchive\\LzwStreamWrapper' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/LzwStreamWrapper.php',
+        'wapmorgan\\UnifiedArchive\\PclZipInterface' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/PclZipInterface.php',
+        'wapmorgan\\UnifiedArchive\\UnifiedArchive' => __DIR__ . '/..' . '/wapmorgan/unified-archive/src/UnifiedArchive.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

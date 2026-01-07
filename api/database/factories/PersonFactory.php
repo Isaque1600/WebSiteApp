@@ -17,7 +17,9 @@ class PersonFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nome' => fake()->userName(),
+            'tipo' => fake()->randomElement(['cliente', 'contador']),
+            'email' => fake()->unique()->safeEmail(),
         ];
     }
 }

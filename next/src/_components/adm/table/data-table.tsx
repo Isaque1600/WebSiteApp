@@ -68,7 +68,6 @@ export function DataTable<TData, TValue>({
 
   useEffect(() => {
     const columnsSelected = columnVisibility;
-    console.log(columnsSelected);
   }, [columnVisibility]);
 
   return (
