@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const api = axios.create({
   baseURL: process.env.BASEPATH || "http://localhost:8001/api",
@@ -16,5 +17,34 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (res) => res,
+  (error: AxiosError) => {
+    if (
+      error.response?.status === 401 &&
+      (error.response.data as any).message === "Unauthorized" &&
+      error.config?.url !== "/auth/logout"
+    ) {
+      if (toast.getToasts().some((t) => t.id === "session-expired")) {
+        return Promise.reject(error);
+      }
+
+      toast.info("Sessão expirada. Faça login novamente.", {
+        duration: 1000 * 2,
+        position: "top-center",
+        onDismiss: () => {
+          window.location.href = "/logout";
+        },
+        id: "session-expired",
+      });
+      setTimeout(() => {
+        window.location.href = "/logout";
+      }, 1000 * 2);
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  },
+);
 
 export default api;

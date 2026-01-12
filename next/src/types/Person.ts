@@ -2,6 +2,8 @@ export type Person = {
   cod_pes?: string;
   nome?: string;
   razao?: string;
+  cnpj?: string;
+  senha?: string;
   logradouro?: string;
   numero?: string;
   bairro?: string;
@@ -29,6 +31,7 @@ export type PersonFormData = {
   nome: string;
   senha?: string;
   razao?: string;
+  cnpj?: string;
   logradouro?: string;
   numero?: string;
   bairro?: string;

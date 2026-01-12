@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSystemRequest;
 use App\Http\Requests\UpdateSystemRequest;
+use App\Http\Resources\PersonResource;
 use App\Http\Resources\SystemResource;
+use App\Http\Resources\UserResource;
+use App\Models\Person;
 use App\Models\System;
 
 class SystemController
@@ -14,7 +17,21 @@ class SystemController
      */
     public function index()
     {
-        return SystemResource::collection(System::all());
+        $search = $request->search ?? '';
+        $filter = $request->filter ?? 'nome';
+        $per_page = $request->per_page ?? 25;
+        $page = $request->page ?? 1;
+
+        $query = System::where($filter, 'like', "%$search%")
+            ->orderBy($filter)->paginate($per_page, page: $page);
+
+        $res = SystemResource::collection($query);
+
+        return $res->additional([
+            'meta' => [
+                'hasMore' => $query->hasMorePages(),
+            ],
+        ]);
     }
 
     /**
@@ -34,6 +51,11 @@ class SystemController
     public function show(System $system)
     {
         return new SystemResource($system);
+    }
+
+    public function showUsersCount(System $system)
+    {
+        return Person::where('sistema', '=', $system->nome)->count();
     }
 
     /**

@@ -26,8 +26,21 @@ async function loginReq(email: string, password: string): Promise<boolean> {
     Cookies.set("authToken", response.data.access_token);
 
     return true;
-  } catch (err: any) {
-    throw err;
+  } catch (error: any) {
+    if (error instanceof AxiosError) {
+      if (error.response?.data?.error) {
+        switch (error.response?.data?.error) {
+          case "User not found":
+            error.message = "Usuário não encontrado";
+            throw error;
+
+          default:
+            error.message = "Erro ao fazer login";
+            throw error;
+        }
+      }
+    }
+    return false;
   }
 }
 
@@ -37,12 +50,22 @@ async function logoutReq(): Promise<boolean> {
     Cookies.remove("authToken");
     return true;
   } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 401) {
+        Cookies.remove("authToken");
+        return true;
+      }
+    }
     throw error;
   }
 }
 
 async function fetchMe(): Promise<AuthMe> {
   try {
+    if (!Cookies.get("authToken")) {
+      return Promise.reject("No auth token found");
+    }
+
     const response = await api.get<AuthMe>("/auth/me");
     return response.data;
   } catch (error) {
@@ -62,8 +85,10 @@ export const useAuth = () => {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: USER_DATA_QUERY_KEY });
       },
-      onError: () => {
+      onError: (error) => {
         queryClient.setQueryData(USER_DATA_QUERY_KEY, null);
+
+        return error;
       },
     });
 
@@ -79,9 +104,10 @@ export const useAuth = () => {
     useQuery({
       queryKey: USER_DATA_QUERY_KEY,
       queryFn: async () => fetchMe(),
-      staleTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 60,
       retry: (failureCount, error) => {
         if (failureCount >= 3) return false;
+        if (error.message === "No auth token found") return false;
         if (error instanceof AxiosError) {
           if (error.response?.status === 401) return false;
         }

@@ -6,6 +6,7 @@ type Props = {
   text?: string;
   className?: string;
   field: any;
+  isError?: boolean;
   required?: boolean;
 } & InputProps;
 
@@ -14,6 +15,7 @@ export function CustomInput({
   required = false,
   className,
   field,
+  isError,
   ...props
 }: Props) {
   return (
@@ -21,13 +23,14 @@ export function CustomInput({
       <FormControl id={text} className="relative flex flex-col">
         <Input
           className={twMerge(
-            "peer relative text-clip rounded-none border-x-0 border-t-0 text-lg text-neutral-100 focus-visible:ring-0",
+            "peer relative text-clip rounded-none border-x-0 border-t-0 text-lg text-neutral-100 focus-visible:ring-0 data-[invalid=true]:border-red-550",
             className,
           )}
           {...props}
           {...field}
           id={field.name}
           placeholder=" "
+          data-invalid={isError}
         />
       </FormControl>
       <FormLabel

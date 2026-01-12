@@ -1,12 +1,7 @@
-import Axios from "axios";
+import api from "@/lib/axios";
 
 export async function GetCEPInfo(cep: string) {
-  let apiEndPoint = "http://localhost:8000/api/cepInfo/{cep}";
-
-  apiEndPoint = apiEndPoint.replace("{cep}", cep);
-
-  const cepInfo = await Axios.get(apiEndPoint);
-  console.log(cepInfo);
+  const cepInfo = await api.get(`/cepInfo/${cep}`);
 
   return cepInfo;
 }

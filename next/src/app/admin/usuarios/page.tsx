@@ -95,7 +95,32 @@ export default function Usuarios({}: Props) {
           </Select>
         </div>
         {isLoading ? (
-          <Skeleton></Skeleton>
+          <div className="mt-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-10 w-64" />
+              <Skeleton className="h-10 w-32" />
+            </div>
+            <div className="rounded-md border">
+              <div className="border-b p-4">
+                <div className="flex gap-4">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Skeleton key={i} className="h-6 flex-1" />
+                  ))}
+                </div>
+              </div>
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="flex gap-4 border-b p-4">
+                  {Array.from({ length: 5 }).map((_, j) => (
+                    <Skeleton key={j} className="h-6 flex-1" />
+                  ))}
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-8 w-64" />
+            </div>
+          </div>
         ) : (
           <DataTable
             data={data.data}

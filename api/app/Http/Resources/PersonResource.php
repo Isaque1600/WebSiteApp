@@ -2,54 +2,58 @@
 
 namespace App\Http\Resources;
 
+use Crypt;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PersonResource extends JsonResource
-{
+class PersonResource extends JsonResource {
     /**
      * Transform the resource collection into an array.
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
-    {
+    public function toArray(Request $request): array {
         $personData = [
-            'cod_pes' => $this->cod_pes,
-            'nome' => mb_convert_case($this->nome, MB_CASE_TITLE, "UTF-8"),
-            'razao' => $this->razao,
-            'logradouro' => $this->logradouro,
-            'numero' => $this->numero,
-            'bairro' => $this->bairro,
-            'cidade' => $this->cidade,
-            'cep' => $this->cep,
-            'uf' => $this->uf,
-            'cnpj' => $this->cnpj,
-            'ie' => $this->ie,
-            'contato' => $this->contato,
-            'sistema' => $this->sistema,
-            'serial' => $this->serial,
-            'obs' => $this->obs,
-            'ven_cert' => $this->ven_cert?->format('d/m/Y'),
-            'email' => $this->email,
-            'situacao' => $this->situacao,
-            'tef' => $this->tef,
-            'nfe' => $this->nfe,
-            'sped' => $this->sped,
-            'contador' => $this->contador,
+            'cod_pes'      => $this->cod_pes,
+            'nome'         => mb_convert_case($this->nome, MB_CASE_TITLE, "UTF-8"),
+            'razao'        => $this->razao,
+            'logradouro'   => $this->logradouro,
+            'numero'       => $this->numero,
+            'bairro'       => $this->bairro,
+            'cidade'       => $this->cidade,
+            'cep'          => $this->cep,
+            'uf'           => $this->uf,
+            'cnpj'         => $this->cnpj,
+            'ie'           => $this->ie,
+            'contato'      => $this->contato,
+            'sistema'      => $this->sistema,
+            'serial'       => $this->serial,
+            'obs'          => $this->obs,
+            'ven_cert'     => $this->ven_cert?->format('d/m/Y'),
+            'email'        => $this->email,
+            'situacao'     => $this->situacao,
+            'tef'          => $this->tef,
+            'tipo'         => $this->tipo,
+            'nfe'          => $this->nfe,
+            'sped'         => $this->sped,
+            'contador'     => $this->contador,
             'email_backup' => $this->email_backup,
             'senha_backup' => $this->senha_backup,
         ];
 
         if ($this->user) {
-            $userData = [
-                'user_id' => $this->user->id,
-                'login' => $this->user->login,
+            $userData   = [
+                'user_id'        => $this->user->id,
+                'login'          => $this->user->login,
                 'user_situation' => $this->user->situation,
-                'user_type' => $this->user->type,
-                'login_time' => $this->user->loginTime?->format('d/m/Y H:i:s'),
+                'user_type'      => $this->user->type,
+                'login_time'     => $this->user->loginTime?->format('d/m/Y H:i:s'),
+                'senha'          => Crypt::decrypt($this->user->senha),
             ];
-            $personData = array_merge($personData, $userData);
+            $personData = [
+                ...$personData,
+                ...$userData
+            ];
         }
 
         return $personData;

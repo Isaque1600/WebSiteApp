@@ -2,18 +2,24 @@
 
 import { DialogDescription } from "@/_components/ui/dialog";
 import { Loader2, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomDialog } from "./CustomDialog/CustomDialog";
 import CustomDialogHeader from "./CustomDialog/CustomDialogHeader";
 import CustomDialogTrigger from "./CustomDialog/CustomDialogTrigger";
 
 type Props = {
-  user: any;
+  deleteCallback: () => void;
+  loadingState: boolean;
 };
 
-export default function DeleteDialog({ user }: Props) {
+export default function DeleteDialog({ deleteCallback, loadingState }: Props) {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!loadingState) {
+      setOpen(false);
+    }
+  }, [loadingState]);
 
   return (
     <CustomDialog.Root open={open} onOpenChange={setOpen}>
@@ -21,7 +27,10 @@ export default function DeleteDialog({ user }: Props) {
         <Trash2 />
       </CustomDialogTrigger>
       <CustomDialog.Content>
-        <CustomDialogHeader text="Você tem certeza que deseja deletar esse registro?" />
+        <CustomDialogHeader
+          text="Você tem certeza que deseja deletar esse registro?"
+          className="mt-2"
+        />
         <DialogDescription>
           Essa ação é irreversível, não pode ser desfeita!
         </DialogDescription>
@@ -30,20 +39,11 @@ export default function DeleteDialog({ user }: Props) {
           <CustomDialog.CustomCloseBtn
             className="gap-2 bg-red-650 text-lg hover:bg-red-700"
             onClick={() => {
-              console.log(user);
-
-              setLoading(true);
-
-              setTimeout(() => {
-                setOpen(false);
-                setLoading(false);
-
-                return;
-              }, 2000);
+              deleteCallback();
             }}
-            disabled={loading}
+            disabled={loadingState}
           >
-            {loading ? (
+            {loadingState ? (
               <Loader2 className="animate-spin" />
             ) : (
               <>

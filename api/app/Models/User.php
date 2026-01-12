@@ -10,8 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Log;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
-{
+class User extends Authenticatable implements JWTSubject {
     use HasFactory, Notifiable, HasApiTokens;
 
     /**
@@ -39,21 +38,22 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
+    protected function casts(): array {
         return [
             'loginTime' => 'datetime',
         ];
     }
 
-    public function person()
-    {
+    public function person() {
         return $this->belongsTo(Person::class, "person_id", "cod_pes");
     }
 
-    public function userColumns()
-    {
+    public function userColumns() {
         return $this->hasOne(UserColumn::class, 'user_id', 'id');
+    }
+
+    public function theme() {
+        return $this->hasOne(Theme::class, 'user_id', 'id');
     }
 
     /**
@@ -61,8 +61,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return mixed
      */
-    public function getJWTIdentifier()
-    {
+    public function getJWTIdentifier() {
         return $this->getKey();
     }
 
@@ -71,8 +70,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @return array
      */
-    public function getJWTCustomClaims()
-    {
+    public function getJWTCustomClaims() {
         return [];
     }
 
@@ -81,8 +79,7 @@ class User extends Authenticatable implements JWTSubject
      * 
      * @return
      */
-    public function validatePassword($password)
-    {
+    public function validatePassword($password) {
         if (Crypt::decrypt($this->senha) == $password) {
             return true;
         }

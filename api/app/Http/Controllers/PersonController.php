@@ -14,23 +14,29 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
-class PersonController extends Controller implements HasMiddleware
-{
+class PersonController extends Controller implements HasMiddleware {
 
     /**
      * Display a listing of the resource.
      * 
      */
-    public function index(Request $request, string $type)
-    {
-        $search = $request->search ?? '';
-        $filter = $request->filter ?? 'nome';
+    public function index(Request $request, string $type) {
+        $search   = $request->search ?? '';
+        $filter   = $request->filter ?? 'nome';
         $per_page = $request->per_page ?? 25;
-        $page = $request->page ?? 1;
+        $page     = $request->page ?? 1;
+        $stats    = $request->status ?? null;
 
         $query = Person::where('tipo', '=', $type)
-            ->where($filter, 'like', "%$search%")->with('user')
-            ->orderBy($filter)->paginate($per_page, page: $page);
+            ->where($filter, 'like', "%$search%")
+            ->where(function (Builder $query) use ($stats) {
+                if ($stats !== 'null') {
+                    $query->where('situacao', '=', $stats);
+                }
+            })
+            ->with('user')
+            ->orderBy($filter)
+            ->paginate($per_page, page: $page);
 
         $res = match ($type) {
             'cliente'  => PersonResource::collection($query),
@@ -47,38 +53,45 @@ class PersonController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePersonRequest $request, string $type)
-    {
-        $person = new Person($request->validated());
+    public function store(StorePersonRequest $request, string $type) {
+        $person       = new Person($request->validated());
         $person->tipo = $type;
         $person->save();
 
         if ($type == "contador") {
-            $user = new User();
-            $user->login = $request->nome;
-            $user->senha = Crypt::encrypt($request->senha);
-            $user->type = "contador";
+            $user            = new User();
+            $user->login     = $request->nome;
+            $user->senha     = Crypt::encrypt($request->senha);
+            $user->type      = "contador";
             $user->situation = $request->situacao;
-            $user->person()->associate($person);
+            $user->person()
+                ->associate($person);
             $user->save();
         }
 
-        return response()->json(['data' => $person, 'message' => 'success'], 201);
+        return response()->json([
+            'data'    => $person,
+            'message' => 'success'
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        return new PersonResource(Person::findOrFail($id));
+    public function show(string $id) {
+        $person = Person::findOrFail($id);
+
+        if ($person->tipo == 'contador') {
+            $person->load('user');
+        }
+
+        return new PersonResource($person);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePersonRequest $request, string $type, string $id)
-    {
+    public function update(UpdatePersonRequest $request, string $type, string $id) {
         switch ($type) {
             case 'cliente':
                 $person = Person::findOrFail($id);
@@ -89,7 +102,11 @@ class PersonController extends Controller implements HasMiddleware
             case 'contador':
                 $person = Person::findOrFail($id);
                 $person->update($request->validated());
-                $person->user->update(['situation' => $person->situacao, 'login' => $person->nome, 'loginTime' => now()]);
+                $person->user->update([
+                    'situation' => $person->situacao,
+                    'login'     => $person->nome,
+                    'loginTime' => now()
+                ]);
 
                 if ($request->senha) {
                     $person->user->update(['senha' => Crypt::encrypt($request->senha)]);
@@ -103,8 +120,7 @@ class PersonController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
+    public function destroy(string $id) {
         Person::findOrFail($id)->deleteOrFail();
 
         return response()->json(['message' => 'success'], 204);
@@ -113,8 +129,7 @@ class PersonController extends Controller implements HasMiddleware
     /**
      * @inheritDoc
      */
-    public static function middleware()
-    {
+    public static function middleware() {
         return [
             new Middleware('auth:api'),
         ];

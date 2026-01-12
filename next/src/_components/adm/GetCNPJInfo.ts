@@ -1,12 +1,11 @@
-import Axios from "axios";
+import api from "@/lib/axios";
 
 export async function GetCNPJInfo(cnpj: string) {
-  let apiEndPoint = "http://localhost:8000/api/cnpjInfo/{cnpj}";
+  try {
+    const response = await api.get(`/cnpjInfo/${cnpj}`);
 
-  apiEndPoint = apiEndPoint.replace("{cnpj}", cnpj);
-
-  const cnpjInfo = await Axios.get(apiEndPoint);
-  console.log(cnpjInfo);
-
-  return cnpjInfo;
+    return response;
+  } catch (error) {
+    throw error;
+  }
 }

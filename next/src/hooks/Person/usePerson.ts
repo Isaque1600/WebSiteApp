@@ -21,15 +21,14 @@ async function fetchUsers({
   status,
 }: PersonFilter) {
   try {
-    const params = new URLSearchParams({
-      page,
-      per_page,
-      search,
-      filter: search_by,
-      status,
-    });
+    const params = new URLSearchParams();
+    if (page) params.append("page", page);
+    if (per_page) params.append("per_page", per_page);
+    if (search) params.append("search", search);
+    if (search_by) params.append("filter", search_by);
+    if (status) params.append("status", status);
 
-    const response = await api.get(`/person/${type}?${params.toString()}`);
+    const response = await api.get(`/person/type/${type}?${params.toString()}`);
 
     return response.data;
   } catch (error) {
@@ -59,9 +58,13 @@ async function createPerson(data: PersonFormData) {
   }
 }
 
-async function updatePerson(id: string, data: PersonFormData) {
+async function updatePerson(
+  id: string,
+  currentType: string,
+  data: Partial<PersonFormData>,
+) {
   try {
-    const response = await api.put(`/person/${id}`, data);
+    const response = await api.put(`/person/${currentType}/${id}`, data);
     return response.data;
   } catch (error) {
     console.error("Error updating person:", error);
@@ -82,99 +85,140 @@ async function deletePerson(id: string) {
 export const usePerson = () => {
   const queryClient = useQueryClient();
 
-  const get = (filters: PersonFilter) =>
+  const get = (filters: PersonFilter = {}) =>
     useQuery({
       queryKey: [...PERSON_QUERY_KEY, filters],
       queryFn: () => fetchUsers(filters),
-      staleTime: 10 * 60 * 1000, // 10 minutes
       placeholderData: keepPreviousData,
     });
 
   const prefetchNextPage = ({ page, ...filters }: PersonFilter) =>
     usePrefetchQuery({
-      queryKey: [...PERSON_QUERY_KEY, { page: page + 1, ...filters }],
-      queryFn: () => fetchUsers({ page: page + 1, ...filters }),
+      queryKey: [...PERSON_QUERY_KEY, { page: page! + 1, ...filters }],
+      queryFn: () => fetchUsers({ page: String(+page! + 1), ...filters }),
     });
 
-  const getById = (id: string) =>
+  const getById = (id: string, option?: { enabled?: boolean }) =>
     useQuery({
       queryKey: [...PERSON_QUERY_KEY, id],
       queryFn: () => fetchUserById(id),
-      staleTime: 10 * 60 * 1000, // 10 minutes
+      enabled: !!id && (option?.enabled ?? true),
     });
 
-  const create = (data: PersonFormData) =>
+  const create = () =>
     useMutation({
-      mutationFn: () => createPerson(data),
+      mutationFn: (data: PersonFormData) => createPerson(data),
       onMutate: async (_, variables) => {
         await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
 
-        queryClient.setQueryData(PERSON_QUERY_KEY, (oldData: Person[]) => {
-          return [...oldData, variables];
-        });
-        toast.success("Pessoa criada com sucesso!");
+        queryClient.setQueriesData(
+          { queryKey: PERSON_QUERY_KEY },
+          (oldData: Person[] | undefined) => {
+            if (!oldData || !Array.isArray(oldData)) return oldData;
+
+            return [...oldData, { ...variables }];
+          },
+        );
 
         return {
-          previousData: queryClient.getQueryData<Person[]>(PERSON_QUERY_KEY),
+          previousData: queryClient.getQueriesData({
+            queryKey: PERSON_QUERY_KEY,
+          }),
         };
       },
       onError: (_, __, result) => {
-        toast.error("Erro ao criar pessoa.");
-        queryClient.setQueryData(PERSON_QUERY_KEY, result?.previousData);
+        toast.error("Erro ao criar pessoa.", { id: "error" });
+        queryClient.setQueriesData(
+          { queryKey: PERSON_QUERY_KEY },
+          result?.previousData,
+        );
       },
-      onSettled: () => {
+      onSettled: (_, error) => {
+        if (!error) {
+          toast.success("Pessoa criada com sucesso!", { id: "created" });
+        }
         queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
       },
     });
 
-  const update = (id: string, data: PersonFormData) =>
+  const update = () =>
     useMutation({
-      mutationFn: () => updatePerson(id, data),
-      onMutate: async (_, variables) => {
+      mutationFn: ({
+        id,
+        currentType,
+        data,
+      }: {
+        id: string;
+        currentType: string;
+        data: Partial<PersonFormData>;
+      }) => updatePerson(id, currentType, data),
+      onMutate: async ({ id, data }) => {
         await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
 
-        const previousData =
-          queryClient.getQueryData<Person[]>(PERSON_QUERY_KEY);
-
-        queryClient.setQueryData(PERSON_QUERY_KEY, (oldData: Person[]) => {
-          return oldData.map((person) =>
-            person.cod_pes === id ? { ...person, ...variables } : person,
-          );
+        const previousData = queryClient.getQueriesData({
+          queryKey: PERSON_QUERY_KEY,
         });
-        toast.success("Pessoa atualizada com sucesso!");
+
+        queryClient.setQueriesData(
+          { queryKey: PERSON_QUERY_KEY },
+          (oldData: Person[] | undefined) => {
+            if (!oldData || !Array.isArray(oldData)) return oldData;
+
+            return oldData.map((person) =>
+              person.cod_pes === id ? { ...data, ...person } : person,
+            );
+          },
+        );
 
         return { previousData };
       },
       onError: (_, __, contenxt) => {
-        toast.error("Erro ao atualizar pessoa.");
-        queryClient.setQueryData(PERSON_QUERY_KEY, contenxt?.previousData);
+        toast.error("Erro ao atualizar pessoa.", { id: "error" });
+        queryClient.setQueriesData(
+          { queryKey: PERSON_QUERY_KEY },
+          contenxt?.previousData,
+        );
       },
-      onSettled: () => {
+      onSettled: (_, error) => {
+        if (!error) {
+          toast.success("Pessoa atualizada com sucesso!", { id: "updated" });
+        }
         queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
       },
     });
 
-  const remove = (id: string) =>
+  const remove = () =>
     useMutation({
-      mutationFn: () => deletePerson(id),
-      onMutate: async () => {
+      mutationFn: (id: string) => deletePerson(id),
+      onMutate: async (id: string) => {
         await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
 
-        const previousData =
-          queryClient.getQueryData<Person[]>(PERSON_QUERY_KEY);
-
-        queryClient.setQueryData(PERSON_QUERY_KEY, (oldData: Person[]) => {
-          return oldData.filter((person) => person.cod_pes !== id);
+        const previousData = queryClient.getQueriesData({
+          queryKey: PERSON_QUERY_KEY,
         });
-        toast.success("Pessoa deletada com sucesso!");
+
+        queryClient.setQueriesData(
+          { queryKey: PERSON_QUERY_KEY },
+          (oldData: Person[] | undefined) => {
+            if (!oldData || !Array.isArray(oldData)) return oldData;
+
+            return oldData.filter((person) => person.cod_pes !== id);
+          },
+        );
 
         return { previousData };
       },
       onError: (_, __, context) => {
-        toast.error("Erro ao deletar pessoa.");
-        queryClient.setQueryData(PERSON_QUERY_KEY, context?.previousData);
+        toast.error("Erro ao deletar pessoa.", { id: "error" });
+        queryClient.setQueriesData(
+          { queryKey: PERSON_QUERY_KEY },
+          context?.previousData,
+        );
       },
-      onSettled: () => {
+      onSettled: (_, error) => {
+        if (!error) {
+          toast.success("Pessoa deletada com sucesso!", { id: "deleted" });
+        }
         queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
       },
     });

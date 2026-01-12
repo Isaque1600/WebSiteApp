@@ -8,34 +8,37 @@ use App\Models\User;
 use Crypt;
 use Illuminate\Http\Request;
 
-class AdminController extends Controller
-{
+class AdminController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
+    public function index() {
         return UserResource::collection(User::all()->where('type', '=', 'admin'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
-    {
-        $admin = new User($request->validated());
-        $admin->type = "admin";
+    public function store(StoreUserRequest $request) {
+        $admin        = new User($request->validated());
+        $admin->type  = "admin";
         $admin->senha = Crypt::encrypt($request->senha);
+        $admin->theme()
+            ->create();
+        $admin->userColumns()
+            ->create();
         $admin->save();
 
-        return response()->json(['data' => $admin, 'message' => 'success'], 201);
+        return response()->json([
+            'data'    => $admin,
+            'message' => 'success'
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
+    public function show(string $id) {
         $admin = User::findOrFail($id)->where('type', '=', 'admin');
 
         return new UserResource($admin);
@@ -44,21 +47,23 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
+    public function update(Request $request, string $id) {
         $admin = User::findOrFail($id)->where('type', '=', 'admin');
         $admin->update($request->validated());
         $admin->save();
 
-        return response()->json(['data' => $admin, 'message' => 'success'], 201);
+        return response()->json([
+            'data'    => $admin,
+            'message' => 'success'
+        ], 201);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        User::findOrFail($id)->where('type', '=', 'admin')->delete();
+    public function destroy(string $id) {
+        User::findOrFail($id)->where('type', '=', 'admin')
+            ->delete();
 
         return response()->json(['message' => 'success'], 204);
     }

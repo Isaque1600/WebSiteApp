@@ -3,14 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class UpdateUserColumnRequest extends FormRequest
-{
+class UpdateUserColumnRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
@@ -19,11 +18,17 @@ class UpdateUserColumnRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         return [
-            'user_id' => ['integer', 'exists:users,id', 'unique:users_columns,user_id'],
-            'columns' => ['string', 'max:255'],
+            'user_id' => [
+                'integer',
+                'exists:users,id',
+                Rule::unique('users_columns')->ignore($this->user_id)
+            ],
+            'columns' => [
+                'string',
+                'max:255'
+            ],
         ];
     }
 }

@@ -5,9 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserColumn extends Model
-{
+class UserColumn extends Model {
     use HasFactory;
+
+    /**
+     * The primary key associated with the table.
+     */
+    protected $primaryKey = 'user_id';
+
+    /**
+     * Indicates if the model's ID is auto-incrementing.
+     */
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -24,8 +33,7 @@ class UserColumn extends Model
         'updated_at'
     ];
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 }

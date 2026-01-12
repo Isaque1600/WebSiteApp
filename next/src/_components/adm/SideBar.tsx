@@ -40,12 +40,12 @@ export default function SideBar({ sideBar }: Props) {
         <span className="max-lg:hidden">Dashboard</span>
       </Link>
       <Link
-        href={"/admin/relatorio"}
-        data-active={location === "/admin/relatorio"}
+        href={"/admin/relatorios"}
+        data-active={location === "/admin/relatorios"}
         className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm data-[active=true]:bg-neutral-700 data-[active=true]:shadow-sm"
       >
         <BarChart4 />
-        <span className="max-lg:hidden">Relatório</span>
+        <span className="max-lg:hidden">Relatórios</span>
       </Link>
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1" className="border-none">

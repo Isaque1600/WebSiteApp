@@ -26,6 +26,7 @@ type Props = {
     userInput: string,
     maskOptions?: any,
   ) => { value: string; selection: { start: number; end: number } | null };
+  isError?: boolean;
 } & InputProps;
 
 export function CustomMaskedInput({
@@ -50,9 +51,10 @@ export function CustomMaskedInput({
           mask={mask}
           alwaysShowMask={alwaysShowMask}
           className={twMerge(
-            "peer relative flex h-9 w-full text-clip rounded-none border border-x-0 border-t-0 border-input bg-transparent px-3 py-1 text-lg text-neutral-100 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+            "peer relative flex h-9 w-full text-clip rounded-none border border-x-0 border-t-0 border-input bg-transparent px-3 py-1 text-lg text-neutral-100 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 data-[invalid=true]:border-red-550",
             className,
           )}
+          data-invalid={props.isError}
           placeholder=" "
           maskChar={maskChar}
           formatChars={formatChars}

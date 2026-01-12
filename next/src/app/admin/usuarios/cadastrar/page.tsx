@@ -8,7 +8,12 @@ import { GetCEPInfo } from "@/_components/adm/GetCEPInfo";
 import { GetCNPJInfo } from "@/_components/adm/GetCNPJInfo";
 import { Section } from "@/_components/adm/section/Section";
 import { Button } from "@/_components/ui/button";
-import { FormControl, FormDescription, FormItem } from "@/_components/ui/form";
+import {
+  FormControl,
+  FormDescription,
+  FormItem,
+  FormMessage,
+} from "@/_components/ui/form";
 import { Label } from "@/_components/ui/label";
 import {
   Select,
@@ -17,11 +22,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/_components/ui/select";
+import { Skeleton } from "@/_components/ui/skeleton";
 import { Switch } from "@/_components/ui/switch";
 import { Textarea } from "@/_components/ui/textarea";
+import { usePerson } from "@/hooks/Person/usePerson";
+import { useSystem } from "@/hooks/Systems/useSystem";
+import { Errors } from "@/types/Errors";
+import { Person, PersonFormData } from "@/types/Person";
+import { System } from "@/types/System";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormGroup } from "@mui/material";
-import { Search, UserPlus } from "lucide-react";
+import { AxiosError } from "axios";
+import { Loader2, Search, UserPlus } from "lucide-react";
+import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,11 +42,54 @@ import { z } from "zod";
 type Props = {};
 
 export default function Cadastrar({}: Props) {
-  const [type, setType] = useState("cliente");
+  const [type, _setType] = useState("cliente");
+
+  const { get: getSys } = useSystem();
+  const {
+    data: sysData,
+    isLoading: isSysLoading,
+    isError: isSysError,
+    error: sysError,
+  } = getSys();
+
+  const { get: getAcc } = usePerson();
+  const {
+    data: accData,
+    isLoading: isAccLoading,
+    isError: isAccError,
+    error: accError,
+  } = getAcc({ type: "contador", status: "ativo" });
+
+  const { create } = usePerson();
+  const {
+    mutateAsync: createPerson,
+    isPending,
+    isSuccess,
+    isError,
+    error,
+  } = create();
 
   useEffect(() => {
-    return () => {};
-  }, []);
+    if (isSuccess) {
+      redirect("/admin/usuarios");
+    }
+
+    if (isError) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 422) {
+          const errors: Record<string, unknown[]> = error.response.data.errors;
+
+          for (const key in errors) {
+            const errorKey = errors[key][0] as keyof typeof Errors;
+            form.setError(key as any, {
+              type: "manual",
+              message: Errors[errorKey],
+            });
+          }
+        }
+      }
+    }
+  }, [isSuccess, isError, error]);
 
   const form = useForm<z.infer<typeof usersFormSchema>>({
     resolver: zodResolver(usersFormSchema),
@@ -66,8 +122,26 @@ export default function Cadastrar({}: Props) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof usersFormSchema>) => {
-    console.log(values);
+  const onSubmit = async ({
+    situacao,
+    tef,
+    nfe,
+    sped,
+    tipo,
+    uf,
+    ...values
+  }: z.infer<typeof usersFormSchema>) => {
+    const payload: PersonFormData = {
+      ...values,
+      situacao: situacao ? "ativo" : "inativo",
+      tef: tef ? "sim" : "nao",
+      nfe: nfe ? "sim" : "nao",
+      sped: sped ? "sim" : "nao",
+      tipo: tipo as "cliente" | "contador",
+      uf: uf.toUpperCase(),
+    };
+
+    await createPerson(payload);
   };
 
   let formatCharsDate = {
@@ -119,6 +193,13 @@ export default function Cadastrar({}: Props) {
     return { value, selection: newState.selection };
   };
 
+  const setType = (value: string) => {
+    _setType(value);
+
+    form.clearErrors();
+    form.setValue("tipo", value);
+  };
+
   return (
     <Section.Root className="space-y-6">
       <Section.Title>Cadastrar Usuário</Section.Title>
@@ -150,8 +231,16 @@ export default function Cadastrar({}: Props) {
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <CustomInput text="Nome Fantasia" field={field} />
+                      <CustomInput
+                        text="Nome Fantasia"
+                        required={type === "contador"}
+                        isError={
+                          type === "contador" && !!form.formState.errors.nome
+                        }
+                        field={field}
+                      />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -161,8 +250,14 @@ export default function Cadastrar({}: Props) {
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormControl>
-                      <CustomInput text="Razão" field={field} required={true} />
+                      <CustomInput
+                        text="Razão"
+                        field={field}
+                        required={true}
+                        isError={!!form.formState.errors.razao}
+                      />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -179,52 +274,100 @@ export default function Cadastrar({}: Props) {
               />
               <CustomForm.Field
                 form={form}
+                name="ie"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormControl>
+                      <CustomInput text="IE" field={field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <CustomForm.Field
+                form={form}
                 name="cnpj"
                 render={({ field }) => (
-                  <div className="flex flex-row items-center gap-2">
-                    <FormItem className="w-full">
+                  <FormItem className="w-full">
+                    <div className="flex flex-row items-center gap-2">
                       <FormControl>
                         <CustomMaskedInput
                           text="CNPJ"
                           field={field}
                           mask="99.999.999/9999-99"
                           maskChar={""}
+                          isError={!!form.formState.errors.cnpj}
                         />
                       </FormControl>
-                    </FormItem>
-                    <Button
-                      variant={"ghost"}
-                      className="cursor-pointer hover:bg-neutral-500 hover:text-neutral-100"
-                      size={"icon"}
-                      aria-label="Pesquisar CNPJ"
-                      title="Pesquisar CNPJ"
-                      onClick={async (e) => {
-                        e.preventDefault();
+                      <Button
+                        variant={"ghost"}
+                        className="cursor-pointer hover:bg-neutral-500 hover:text-neutral-100"
+                        size={"icon"}
+                        aria-label="Pesquisar CNPJ"
+                        title="Pesquisar CNPJ"
+                        onClick={async (e) => {
+                          e.preventDefault();
 
-                        let cnpj = field.value.replaceAll(".", "");
-                        cnpj = cnpj.replaceAll("/", "");
-                        cnpj = cnpj.replace("-", "");
+                          const cnpjSchema = z
+                            .string()
+                            .regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/, {
+                              message: "CNPJ inválido",
+                            });
 
-                        const cnpjInfo = await GetCNPJInfo(cnpj);
+                          const parsedCNPJ = cnpjSchema.safeParse(field.value);
 
-                        if (cnpjInfo.status == 200) {
-                          form.setValue("nome", cnpjInfo?.data?.nome);
-                          form.setValue("razao", cnpjInfo?.data?.razao);
-                          form.setValue(
-                            "logradouro",
-                            cnpjInfo?.data?.logradouro,
-                          );
-                          form.setValue("numero", cnpjInfo?.data?.numero);
-                          form.setValue("bairro", cnpjInfo?.data?.bairro);
-                          form.setValue("uf", cnpjInfo?.data?.uf);
-                          form.setValue("cep", cnpjInfo?.data?.cep);
-                          form.setValue("cidade", cnpjInfo?.data?.municipio);
-                        }
-                      }}
-                    >
-                      <Search className="text-neutral-100" />
-                    </Button>
-                  </div>
+                          if (!parsedCNPJ.success) {
+                            form.setError("cnpj", {
+                              type: "manual",
+                              message: parsedCNPJ.error.errors[0].message,
+                            });
+                            return;
+                          } else {
+                            form.clearErrors("cnpj");
+                          }
+
+                          let cnpj = field.value.replaceAll(".", "");
+                          cnpj = cnpj.replaceAll("/", "");
+                          cnpj = cnpj.replace("-", "");
+
+                          try {
+                            const cnpjInfo = await GetCNPJInfo(cnpj);
+
+                            if (cnpjInfo.status == 200) {
+                              form.setValue("nome", cnpjInfo?.data?.nome);
+                              form.setValue("razao", cnpjInfo?.data?.razao);
+                              form.setValue(
+                                "logradouro",
+                                cnpjInfo?.data?.logradouro,
+                              );
+                              form.setValue("numero", cnpjInfo?.data?.numero);
+                              form.setValue("bairro", cnpjInfo?.data?.bairro);
+                              form.setValue("uf", cnpjInfo?.data?.uf);
+                              form.setValue("cep", cnpjInfo?.data?.cep);
+                              form.setValue(
+                                "cidade",
+                                cnpjInfo?.data?.municipio,
+                              );
+                            }
+                          } catch (error) {
+                            console.log(error);
+                            if (error instanceof AxiosError) {
+                              if (
+                                error.response?.data?.error === "CNPJ not found"
+                              ) {
+                                form.setError("cnpj", {
+                                  type: "manual",
+                                  message: "CNPJ não encontrado",
+                                });
+                              }
+                            }
+                          }
+                        }}
+                      >
+                        <Search className="text-neutral-100" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
                 )}
               />
             </div>
@@ -267,8 +410,12 @@ export default function Cadastrar({}: Props) {
                         text="Senha"
                         field={field}
                         required={type == "contador"}
+                        isError={
+                          type == "contador" && !!form.formState.errors.senha
+                        }
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -290,20 +437,35 @@ export default function Cadastrar({}: Props) {
                 name="contador"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">
-                          <SelectValue placeholder="Selecione o Contador" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="border-none bg-neutral-600 text-neutral-100 shadow-md">
-                        <SelectItem value="cliente">Cliente</SelectItem>
-                        <SelectItem value="contador">Contador</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    {isAccLoading ? (
+                      <Skeleton className="h-10 w-full rounded-md" />
+                    ) : (
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">
+                            <SelectValue placeholder="Selecione o Contador" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="border-none bg-neutral-600 text-neutral-100 shadow-md">
+                          {accData.data.map((acc: Person) => (
+                            <SelectItem
+                              key={acc.cod_pes}
+                              value={String(acc.nome)}
+                            >
+                              {acc.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {isAccError && accError && (
+                      <FormMessage className="text-red-500">
+                        {"Erro ao carregar contadores"}
+                      </FormMessage>
+                    )}
                   </FormItem>
                 )}
               />
@@ -312,20 +474,32 @@ export default function Cadastrar({}: Props) {
                 name="sistema"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="w-full border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:normal-case placeholder:text-neutral-400">
-                          <SelectValue placeholder="Selecione o Sistema" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="border-none bg-neutral-600 text-neutral-100 shadow-md">
-                        <SelectItem value="cliente">Cliente</SelectItem>
-                        <SelectItem value="contador">Contador</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    {isSysLoading ? (
+                      <Skeleton className="h-10 w-full rounded-md" />
+                    ) : (
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:normal-case placeholder:text-neutral-400">
+                            <SelectValue placeholder="Selecione o Sistema" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="border-none bg-neutral-600 text-neutral-100 shadow-md">
+                          {sysData.data.map((sys: System) => (
+                            <SelectItem key={sys.id} value={String(sys.nome)}>
+                              {sys.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {isSysError && sysError && (
+                      <FormMessage className="text-red-500">
+                        {"Erro ao carregar sistemas"}
+                      </FormMessage>
+                    )}
                   </FormItem>
                 )}
               />
@@ -578,8 +752,15 @@ export default function Cadastrar({}: Props) {
               </FormItem>
             )}
           />
-          <CustomForm.SubmitBtn icon={<UserPlus />}>
-            Cadastrar
+          <CustomForm.SubmitBtn
+            icon={isPending ? "" : <UserPlus />}
+            disabled={isPending}
+          >
+            {isPending ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Cadastrar Usuário"
+            )}
           </CustomForm.SubmitBtn>
         </CustomForm.Root>
       </div>

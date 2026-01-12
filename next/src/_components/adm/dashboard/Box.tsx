@@ -1,19 +1,23 @@
 import { twJoin } from "tailwind-merge";
 
 type Props = {
-  children?: React.ReactNode;
+  icon?: React.ReactNode;
   className?: string;
+  quantity?: string | number;
+  label?: string;
 };
 
-export function Box({ children, className }: Props) {
+export function Box({ icon, className, quantity, label }: Props) {
   return (
     <div
       className={twJoin(
-        "flex rounded-md p-8 text-lg capitalize text-neutral-100 shadow-md shadow-neutral-800",
+        "flex flex-col items-center rounded-md p-8 text-center text-lg capitalize text-neutral-100 shadow-md shadow-neutral-800",
         className,
       )}
     >
-      {children}
+      {icon}
+      <span className="">{quantity}</span>
+      <span>{label}</span>
     </div>
   );
 }

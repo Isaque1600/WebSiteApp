@@ -8,12 +8,15 @@ import {
   DropdownMenuTrigger,
 } from "@/_components/ui/dropdown-menu";
 import { ScrollArea, ScrollBar } from "@/_components/ui/scroll-area";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserColumns } from "@/hooks/UserColumns/useUserColumn";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   SortingState,
+  Updater,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
@@ -29,7 +32,7 @@ import {
 import Pagination from "../Pagination";
 import PerPage from "../PerPage";
 import Search from "../Search";
-import { columnsSchema } from "./UsersColumn";
+import { columnsAvailable, columnsSchema } from "./UsersColumn";
 
 interface DataTableProps<TData, TValue> {
   data: TData[];
@@ -49,10 +52,64 @@ export function DataTable<TData, TValue>({
   searchColumns,
   per_page,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const { me } = useAuth();
+  const { data: user } = me();
 
-  const columns = columnsSchema as ColumnDef<TData, any>[];
+  const { getById, update } = useUserColumns();
+  const { data: userColumnsData, isLoading } = getById({
+    id: String(user?.id),
+    options: { enabled: true },
+  });
+
+  const { mutateAsync: updateUserColumns } = update;
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, _setColumnVisibility] = useState<VisibilityState>(
+    {},
+  );
+
+  useEffect(() => {
+    if (!isLoading && userColumnsData) {
+      const splittedColumns =
+        userColumnsData.data.columns.length > 0
+          ? userColumnsData.data.columns.split(";")
+          : [];
+
+      const filteredColumns = splittedColumns.filter((column: string) =>
+        columnsAvailable.includes(column),
+      );
+
+      _setColumnVisibility(() => {
+        const visibility: VisibilityState = {};
+        columnsAvailable.forEach((column) => {
+          visibility[column] = !filteredColumns.includes(column);
+        });
+        return visibility;
+      });
+    }
+  }, [userColumnsData, isLoading]);
+
+  const setColumnVisibility = (updaterOrValue: Updater<VisibilityState>) => {
+    const newVisibility =
+      typeof updaterOrValue === "function"
+        ? updaterOrValue(columnVisibility)
+        : updaterOrValue;
+
+    _setColumnVisibility(newVisibility);
+
+    const hiddenColumns = Object.entries(newVisibility)
+      .filter(([_, isVisible]) => !isVisible)
+      .map(([columnId]) => columnId);
+
+    console.log(hiddenColumns);
+
+    updateUserColumns({
+      id: String(user?.id),
+      columns: hiddenColumns,
+    });
+  };
+
+  const columns = columnsSchema as ColumnDef<TData>[];
   const table = useReactTable({
     columns,
     data,
@@ -65,10 +122,6 @@ export function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
-
-  useEffect(() => {
-    const columnsSelected = columnVisibility;
-  }, [columnVisibility]);
 
   return (
     <div className="my-4 flex flex-col items-center">
@@ -92,55 +145,53 @@ export function DataTable<TData, TValue>({
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                      disabled={!column.getCanHide()}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                    disabled={!column.getCanHide()}
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
             </ScrollArea>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
       <div className="w-full">
         <ScrollArea>
-          <Table className="w-full rounded-lg" containerClassName="">
-            <TableHeader className="">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="w-full border-none hover:bg-transparent"
-                >
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className="h-12 rounded-lg px-0.5 [&>div]:first:rounded-tl-md [&>div]:last:rounded-tr-md"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody className="">
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+          {data.length > 0 ? (
+            <Table className="w-full rounded-lg" containerClassName="">
+              <TableHeader className="">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="w-full border-none hover:bg-transparent"
+                  >
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className="h-12 rounded-lg px-0.5 [&>div]:first:rounded-tl-md [&>div]:last:rounded-tr-md"
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody className="">
+                {table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
@@ -158,19 +209,49 @@ export function DataTable<TData, TValue>({
                       </TableCell>
                     ))}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Table className="w-full rounded-lg" containerClassName="">
+              <TableHeader className="">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="w-full border-none hover:bg-transparent"
+                  >
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className="h-12 rounded-lg px-0.5 [&>div]:first:rounded-tl-md [&>div]:last:rounded-tr-md"
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody className="">
+                <TableRow className="border-none hover:bg-transparent">
                   <TableCell
                     colSpan={columns.length}
-                    className="h-24 text-center"
+                    className="h-24 p-0.5 text-center text-neutral-400"
                   >
-                    No results.
+                    <div className="my-16 flex w-full items-center justify-start px-24">
+                      Nenhum dado encontrado.
+                    </div>
                   </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+          )}
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
