@@ -97,8 +97,41 @@ Route::middleware([
     });
 });
 
+Route::middleware('auth:api')->group(function () {
+    Route::group(['prefix' => 'file'], function () {
+        Route::get('available-years', [
+            FileController::class,
+            'availableYears'
+        ]);
 
-Route::get('file/download/{string:filename}', [
+        Route::get('download/{filename}', [
+            FileController::class,
+            'downloadPrivateFile'
+        ])->where('filename', '.*');
+
+        Route::post('download-multiple', [
+            FileController::class,
+            'downloadMultipleFiles'
+        ]);
+
+        Route::get('archive/{year}/{month}', [
+            FileController::class,
+            'archives'
+        ]);
+
+        Route::get('sped/{year}/{month}', [
+            FileController::class,
+            'speds'
+        ]);
+
+        Route::get('certificate', [
+            FileController::class,
+            'certificates'
+        ]);
+    });
+});
+
+Route::get('file/download-public/{filename}', [
     FileController::class,
     'downloadPublicFile'
-]);
+])->where('filename', '.*');
