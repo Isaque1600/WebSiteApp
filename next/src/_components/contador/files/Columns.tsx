@@ -6,9 +6,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { File } from "lucide-react";
 
 export type Files = {
-  file: string;
+  filename: string;
   size: number;
-  mTime: string;
+  lastModified: string;
+  url: string;
+  year: string;
+  month: string;
 };
 
 export const columns: ColumnDef<Files>[] = [
@@ -48,7 +51,7 @@ export const columns: ColumnDef<Files>[] = [
     ),
   },
   {
-    accessorKey: "file",
+    accessorKey: "filename",
     header: ({ column }) => (
       <div
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -67,16 +70,22 @@ export const columns: ColumnDef<Files>[] = [
         />
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="flex h-10 min-w-96 items-center text-left">
-        <a
-          className="flex h-full w-full items-center gap-2 align-middle underline"
-          href={row.getValue("file")}
-          download={true}
+    cell: ({ row, table }) => (
+      <div className="flex h-10 min-w-96 items-center">
+        <Button
+          className="flex h-full w-full items-center justify-start gap-2 py-0 align-middle text-base underline hover:bg-transparent"
+          variant={"ghost"}
+          onClick={(e) => {
+            e.preventDefault();
+            const meta = table.options.meta as {
+              onFilenameClick?: (row: Files) => void;
+            };
+            meta?.onFilenameClick?.(row.original);
+          }}
         >
-          <File />
-          <span className="text-blue-700">{row.getValue("file")}</span>
-        </a>
+          <File className="!size-6" />
+          <span className="text-blue-700">{row.getValue("filename")}</span>
+        </Button>
         <Separator
           orientation="vertical"
           className="h-6 w-[2px] bg-neutral-500"
@@ -117,7 +126,7 @@ export const columns: ColumnDef<Files>[] = [
     ),
   },
   {
-    accessorKey: "mTime",
+    accessorKey: "lastModified",
     header: ({ column }) => (
       <div
         onClick={() => column.toggleSorting(column.getIsSorted() == "asc")}
@@ -134,7 +143,7 @@ export const columns: ColumnDef<Files>[] = [
     ),
     cell: ({ row }) => (
       <div className="flex w-52 items-center justify-center">
-        <div className="w-full text-center">{row.getValue("mTime")}</div>
+        <div className="w-full text-center">{row.getValue("lastModified")}</div>
       </div>
     ),
   },

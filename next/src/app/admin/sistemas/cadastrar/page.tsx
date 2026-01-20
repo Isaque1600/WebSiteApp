@@ -17,7 +17,7 @@ type Props = {};
 
 export default function Cadastrar({}: Props) {
   const { create } = useSystem();
-  const { mutateAsync: createSystem, isPending, isSuccess } = create();
+  const { mutateAsync: createSystem, isPending, isSuccess } = create;
 
   useEffect(() => {
     if (isSuccess) {

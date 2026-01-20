@@ -45,7 +45,7 @@ export const columnsSchema: ColumnDef<Systems>[] = [
       const system = row.original;
 
       const { remove } = useSystem();
-      const { mutateAsync: deleteSystem, isPending } = remove();
+      const { mutateAsync: deleteSystem, isPending } = remove;
 
       return (
         <div className="flex h-16 items-center justify-center gap-2 bg-zinc-750 p-2 text-lg text-neutral-100">

@@ -21,7 +21,7 @@ export function LoginForm() {
     isPending,
     error,
     isError,
-  } = loginMutation();
+  } = loginMutation;
   const { data: userData, isLoading } = me();
 
   const router = useRouter();

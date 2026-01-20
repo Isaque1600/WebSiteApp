@@ -78,27 +78,25 @@ const USER_DATA_QUERY_KEY = ["user_profile"];
 export const useAuth = () => {
   const queryClient = useQueryClient();
 
-  const login = () =>
-    useMutation({
-      mutationFn: ({ email, password }: { email: string; password: string }) =>
-        loginReq(email, password),
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: USER_DATA_QUERY_KEY });
-      },
-      onError: (error) => {
-        queryClient.setQueryData(USER_DATA_QUERY_KEY, null);
+  const login = useMutation({
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      loginReq(email, password),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: USER_DATA_QUERY_KEY });
+    },
+    onError: (error) => {
+      queryClient.setQueryData(USER_DATA_QUERY_KEY, null);
 
-        return error;
-      },
-    });
+      return error;
+    },
+  });
 
-  const logout = () =>
-    useMutation({
-      mutationFn: () => logoutReq(),
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: USER_DATA_QUERY_KEY });
-      },
-    });
+  const logout = useMutation({
+    mutationFn: () => logoutReq(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: USER_DATA_QUERY_KEY });
+    },
+  });
 
   const me = () =>
     useQuery({
@@ -117,25 +115,10 @@ export const useAuth = () => {
 
   const getAuthToken = () => Cookies.get("authToken");
 
-  const checkLoggedIn = () => {
-    if (!getAuthToken()) {
-      return false;
-    }
-
-    const userData = queryClient.getQueryData<AuthMe>(USER_DATA_QUERY_KEY);
-    if (!userData) {
-      return false;
-    }
-
-    return true;
-  };
-
-  const isLoggedIn = checkLoggedIn();
-
   return {
     login,
     logout,
     me,
-    isLoggedIn,
+    getAuthToken,
   };
 };

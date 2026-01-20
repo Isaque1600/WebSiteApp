@@ -124,7 +124,7 @@ export const columnsSchema: ColumnDef<Person>[] = columnsAvailable.map(
           const user = cell.row.original;
 
           const { remove } = usePerson();
-          const { mutateAsync: removeUser, isPending } = remove();
+          const { mutateAsync: removeUser, isPending } = remove;
 
           return (
             <div className="flex h-full items-center justify-center gap-2 bg-zinc-750 p-4 text-lg text-neutral-100">

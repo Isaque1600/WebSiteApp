@@ -3,47 +3,48 @@
 import { useAuth } from "@/hooks/useAuth";
 import { AxiosError } from "axios";
 import { Loader2Icon } from "lucide-react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
 export default function Logout() {
+  const router = useRouter();
   const { logout } = useAuth();
-  const { mutateAsync: logoutUser, isSuccess, isError, error } = logout();
-
-  toast.loading("Saindo...", {
-    id: "logout",
-    duration: 0,
-    position: "top-center",
-  });
+  const { mutateAsync: logoutUser, isSuccess, isError, error } = logout;
 
   useEffect(() => {
+    toast.loading("Saindo...", {
+      id: "logout",
+      duration: 0,
+      position: "top-center",
+    });
+
     const performLogout = async () => {
       await logoutUser();
     };
 
     performLogout();
+  }, []);
 
+  useEffect(() => {
     if (isSuccess) {
       toast.dismiss("logout");
       toast.success("Logout realizado com sucesso!", {
         position: "top-center",
       });
-      redirect("/login");
+      router.push("/login");
     }
 
     if (isError) {
-      if (error instanceof AxiosError) {
-        if (error.status === 401) {
-          toast.dismiss("logout");
-          toast.error(`Sessão expirada!`, { position: "top-center" });
-          return redirect("/login");
-        }
-      }
       toast.dismiss("logout");
-      toast.error(`Erro ao sair!`, { position: "top-center" });
+      if (error instanceof AxiosError && error.status === 401) {
+        toast.error(`Sessão expirada!`, { position: "top-center" });
+      } else {
+        toast.error(`Erro ao sair!`, { position: "top-center" });
+      }
+      router.push("/login");
     }
-  }, [isSuccess, isError, error]);
+  }, [isSuccess, isError, error, router]);
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4">

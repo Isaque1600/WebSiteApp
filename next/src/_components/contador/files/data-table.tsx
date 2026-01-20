@@ -25,6 +25,7 @@ type DataTableProps<TData, TValue> = {
   data: TData[];
   setDisplayDownload: (display: boolean) => void;
   setItensSelected: (itens: any) => void;
+  onFilenameClick?: (row: TData) => void;
 };
 
 export function DataTable<TData, TValue>({
@@ -32,6 +33,7 @@ export function DataTable<TData, TValue>({
   data,
   setDisplayDownload,
   setItensSelected,
+  onFilenameClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -39,6 +41,9 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data: data,
     columns: columns,
+    meta: {
+      onFilenameClick,
+    },
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -73,7 +78,7 @@ export function DataTable<TData, TValue>({
                 return (
                   <TableHead
                     key={header.id}
-                    data-file={header.id == "file"}
+                    data-file={header.id == "filename"}
                     className="rounded-sm border-y-2 border-neutral-500 text-center text-neutral-800 odd:pl-0 data-[file=true]:w-full"
                   >
                     {header.isPlaceholder
@@ -101,7 +106,7 @@ export function DataTable<TData, TValue>({
                     <TableCell
                       key={cell.id}
                       data-file={cell.column.id}
-                      className="rounded-sm text-center text-neutral-800 odd:pl-0 data-[file=file]:w-full"
+                      className="rounded-sm text-center text-neutral-800 odd:pl-0 data-[file=filename]:w-full"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

@@ -67,7 +67,7 @@ export default function Cadastrar({}: Props) {
     isSuccess,
     isError,
     error,
-  } = create();
+  } = create;
 
   useEffect(() => {
     if (isSuccess) {

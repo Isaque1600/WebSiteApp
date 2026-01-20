@@ -72,7 +72,7 @@ export default function UsersUpdateDialog({ user }: Props) {
     isPending,
     isSuccess,
     isError: isUpdateError,
-  } = update();
+  } = update;
 
   useEffect(() => {
     if (isSuccess) {

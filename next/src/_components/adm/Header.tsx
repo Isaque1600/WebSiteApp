@@ -36,7 +36,7 @@ export default function Header({ sideBar, setSideBar }: Props) {
         >
           <DropdownMenuItem className="p-0 text-lg focus:bg-neutral-700 focus:text-neutral-100">
             <Link
-              href={"/config"}
+              href={"/admin/config"}
               className="flex w-full flex-row items-center justify-between gap-2 p-2"
             >
               <Settings /> Configurações

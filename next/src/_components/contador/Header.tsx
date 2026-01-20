@@ -1,12 +1,17 @@
+import { useAuth } from "@/hooks/useAuth";
 import React from "react";
 import { twJoin } from "tailwind-merge";
 
 type HeaderProps = {
+  pageName?: string;
   children?: React.ReactNode;
   className?: string;
 };
 
-export function Header({ children, className }: HeaderProps) {
+export function Header({ pageName, children, className }: HeaderProps) {
+  const { me } = useAuth();
+  const { data: user } = me();
+
   return (
     <header
       className={twJoin(
@@ -14,7 +19,9 @@ export function Header({ children, className }: HeaderProps) {
         className,
       )}
     >
-      <h1 className="text-lg">Arquivos Fiscais - {"user".toUpperCase()}</h1>
+      <h1 className="text-lg">
+        {pageName || "Arquivos Fiscais"} - {user?.login.toUpperCase()}
+      </h1>
       {children}
     </header>
   );

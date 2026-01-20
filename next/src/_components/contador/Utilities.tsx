@@ -1,11 +1,12 @@
 "use client";
 
-import { Download } from "lucide-react";
+import { Download, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 
 type UtilitiesProps = {
   downloadBtn: boolean;
   onClick: () => void;
+  loading?: boolean;
   pageItems: number;
   selectedItens: number;
 };
@@ -13,6 +14,7 @@ type UtilitiesProps = {
 export function Utilities({
   downloadBtn,
   onClick,
+  loading,
   pageItems,
   selectedItens,
 }: UtilitiesProps) {
@@ -24,10 +26,17 @@ export function Utilities({
       {downloadBtn && (
         <Button
           onClick={onClick}
+          disabled={loading}
           className="h-fit w-fit space-x-1 bg-transparent p-3 py-2 shadow-none hover:bg-zinc-200 hover:shadow-inner"
         >
-          <Download className="size-7 text-neutral-800" />
-          <span className="text-lg text-neutral-800">Baixar</span>
+          {loading ? (
+            <Loader2 className="size-7 animate-spin text-neutral-800" />
+          ) : (
+            <Download className="size-7 text-neutral-800" />
+          )}
+          <span className="text-lg text-neutral-800">
+            {loading ? "Carregando..." : "Baixar"}
+          </span>
         </Button>
       )}
       <div className="capitalize">

@@ -43,6 +43,7 @@ api.interceptors.response.use(
       }, 1000 * 2);
       return Promise.reject(error);
     }
+    console.log(error);
     return Promise.reject(error);
   },
 );

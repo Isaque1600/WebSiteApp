@@ -10,10 +10,12 @@ type Props = {
 };
 
 export default function AdminLayout({ children }: Props) {
-  const { isLoggedIn, me } = useAuth();
-  const { data: userData } = me();
+  const { me, getAuthToken } = useAuth();
+  const { data: userData, isLoading } = me();
 
-  if (!isLoggedIn) {
+  const isLoggedIn = !!getAuthToken() && !!userData;
+
+  if (!isLoading && !isLoggedIn) {
     toast.error("Você precisa estar logado para acessar esta área.");
     permanentRedirect("/login");
   }

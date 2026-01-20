@@ -37,6 +37,24 @@ async function fetchUsers({
   }
 }
 
+async function fetchClients({
+  search,
+  search_by,
+}: { search?: string; search_by?: string } = {}) {
+  try {
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
+    if (search_by) params.append("filter", search_by);
+
+    const response = await api.get(`/client?${params.toString()}`);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+}
+
 async function fetchUserById(id: string) {
   try {
     const response = await api.get(`/person/${id}`);
@@ -92,6 +110,13 @@ export const usePerson = () => {
       placeholderData: keepPreviousData,
     });
 
+  const getClients = (filters: { search?: string; search_by?: string } = {}) =>
+    useQuery({
+      queryKey: [...PERSON_QUERY_KEY, "clients", filters],
+      queryFn: () => fetchClients(filters),
+      placeholderData: keepPreviousData,
+    });
+
   const prefetchNextPage = ({ page, ...filters }: PersonFilter) =>
     usePrefetchQuery({
       queryKey: [...PERSON_QUERY_KEY, { page: page! + 1, ...filters }],
@@ -105,123 +130,120 @@ export const usePerson = () => {
       enabled: !!id && (option?.enabled ?? true),
     });
 
-  const create = () =>
-    useMutation({
-      mutationFn: (data: PersonFormData) => createPerson(data),
-      onMutate: async (_, variables) => {
-        await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
+  const create = useMutation({
+    mutationFn: (data: PersonFormData) => createPerson(data),
+    onMutate: async (_, variables) => {
+      await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
 
-        queryClient.setQueriesData(
-          { queryKey: PERSON_QUERY_KEY },
-          (oldData: Person[] | undefined) => {
-            if (!oldData || !Array.isArray(oldData)) return oldData;
+      queryClient.setQueriesData(
+        { queryKey: PERSON_QUERY_KEY },
+        (oldData: Person[] | undefined) => {
+          if (!oldData || !Array.isArray(oldData)) return oldData;
 
-            return [...oldData, { ...variables }];
-          },
-        );
+          return [...oldData, { ...variables }];
+        },
+      );
 
-        return {
-          previousData: queryClient.getQueriesData({
-            queryKey: PERSON_QUERY_KEY,
-          }),
-        };
-      },
-      onError: (_, __, result) => {
-        toast.error("Erro ao criar pessoa.", { id: "error" });
-        queryClient.setQueriesData(
-          { queryKey: PERSON_QUERY_KEY },
-          result?.previousData,
-        );
-      },
-      onSettled: (_, error) => {
-        if (!error) {
-          toast.success("Pessoa criada com sucesso!", { id: "created" });
-        }
-        queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
-      },
-    });
-
-  const update = () =>
-    useMutation({
-      mutationFn: ({
-        id,
-        currentType,
-        data,
-      }: {
-        id: string;
-        currentType: string;
-        data: Partial<PersonFormData>;
-      }) => updatePerson(id, currentType, data),
-      onMutate: async ({ id, data }) => {
-        await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
-
-        const previousData = queryClient.getQueriesData({
+      return {
+        previousData: queryClient.getQueriesData({
           queryKey: PERSON_QUERY_KEY,
-        });
+        }),
+      };
+    },
+    onError: (_, __, result) => {
+      toast.error("Erro ao criar pessoa.", { id: "error" });
+      queryClient.setQueriesData(
+        { queryKey: PERSON_QUERY_KEY },
+        result?.previousData,
+      );
+    },
+    onSettled: (_, error) => {
+      if (!error) {
+        toast.success("Pessoa criada com sucesso!", { id: "created" });
+      }
+      queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
+    },
+  });
 
-        queryClient.setQueriesData(
-          { queryKey: PERSON_QUERY_KEY },
-          (oldData: Person[] | undefined) => {
-            if (!oldData || !Array.isArray(oldData)) return oldData;
+  const update = useMutation({
+    mutationFn: ({
+      id,
+      currentType,
+      data,
+    }: {
+      id: string;
+      currentType: string;
+      data: Partial<PersonFormData>;
+    }) => updatePerson(id, currentType, data),
+    onMutate: async ({ id, data }) => {
+      await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
 
-            return oldData.map((person) =>
-              person.cod_pes === id ? { ...data, ...person } : person,
-            );
-          },
-        );
+      const previousData = queryClient.getQueriesData({
+        queryKey: PERSON_QUERY_KEY,
+      });
 
-        return { previousData };
-      },
-      onError: (_, __, contenxt) => {
-        toast.error("Erro ao atualizar pessoa.", { id: "error" });
-        queryClient.setQueriesData(
-          { queryKey: PERSON_QUERY_KEY },
-          contenxt?.previousData,
-        );
-      },
-      onSettled: (_, error) => {
-        if (!error) {
-          toast.success("Pessoa atualizada com sucesso!", { id: "updated" });
-        }
-        queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
-      },
-    });
+      queryClient.setQueriesData(
+        { queryKey: PERSON_QUERY_KEY },
+        (oldData: Person[] | undefined) => {
+          if (!oldData || !Array.isArray(oldData)) return oldData;
 
-  const remove = () =>
-    useMutation({
-      mutationFn: (id: string) => deletePerson(id),
-      onMutate: async (id: string) => {
-        await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
+          return oldData.map((person) =>
+            person.cod_pes === id ? { ...data, ...person } : person,
+          );
+        },
+      );
 
-        const previousData = queryClient.getQueriesData({
-          queryKey: PERSON_QUERY_KEY,
-        });
+      return { previousData };
+    },
+    onError: (_, __, contenxt) => {
+      toast.error("Erro ao atualizar pessoa.", { id: "error" });
+      queryClient.setQueriesData(
+        { queryKey: PERSON_QUERY_KEY },
+        contenxt?.previousData,
+      );
+    },
+    onSettled: (_, error) => {
+      if (!error) {
+        toast.success("Pessoa atualizada com sucesso!", { id: "updated" });
+      }
+      queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
+    },
+  });
 
-        queryClient.setQueriesData(
-          { queryKey: PERSON_QUERY_KEY },
-          (oldData: Person[] | undefined) => {
-            if (!oldData || !Array.isArray(oldData)) return oldData;
+  const remove = useMutation({
+    mutationFn: (id: string) => deletePerson(id),
+    onMutate: async (id: string) => {
+      await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
 
-            return oldData.filter((person) => person.cod_pes !== id);
-          },
-        );
+      const previousData = queryClient.getQueriesData({
+        queryKey: PERSON_QUERY_KEY,
+      });
 
-        return { previousData };
-      },
-      onError: (_, __, context) => {
-        toast.error("Erro ao deletar pessoa.", { id: "error" });
-        queryClient.setQueriesData(
-          { queryKey: PERSON_QUERY_KEY },
-          context?.previousData,
-        );
-      },
-      onSettled: (_, error) => {
-        if (!error) {
-          toast.success("Pessoa deletada com sucesso!", { id: "deleted" });
-        }
-        queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
-      },
-    });
+      queryClient.setQueriesData(
+        { queryKey: PERSON_QUERY_KEY },
+        (oldData: Person[] | undefined) => {
+          if (!oldData || !Array.isArray(oldData)) return oldData;
 
-  return { get, prefetchNextPage, getById, create, update, remove };
+          return oldData.filter((person) => person.cod_pes !== id);
+        },
+      );
+
+      return { previousData };
+    },
+    onError: (_, __, context) => {
+      toast.error("Erro ao deletar pessoa.", { id: "error" });
+      queryClient.setQueriesData(
+        { queryKey: PERSON_QUERY_KEY },
+        context?.previousData,
+      );
+    },
+    onSettled: (_, error) => {
+      if (!error) {
+        toast.success("Pessoa deletada com sucesso!", { id: "deleted" });
+      }
+      queryClient.invalidateQueries({ queryKey: PERSON_QUERY_KEY });
+    },
+  });
+
+  return { get, getClients, prefetchNextPage, getById, create, update, remove };
 };
