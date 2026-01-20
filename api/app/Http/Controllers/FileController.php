@@ -11,11 +11,12 @@ use Storage;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 use function in_array;
-use function sprintf;
 
 class FileController extends Controller {
     public function downloadPublicFile(string $filePath) {
-        if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[a-zA-Z0-9_\-\/\ .]+$/', $filePath) || in_array(basename($filePath), ['.gitignore'])) {
+        $filePath = urldecode($filePath);
+
+        if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[\p{L}0-9_\-\/\ .]+$/u', $filePath) || in_array(basename($filePath), ['.gitignore'])) {
             return response()->json(['error' => 'Invalid file path'], 400);
         }
 
@@ -29,9 +30,11 @@ class FileController extends Controller {
     }
 
     public function downloadPrivateFile(string $filePath) {
-        $baseName = basename($filePath);
+        $baseName = basename(urldecode($filePath));
 
-        if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[a-zA-Z0-9_\-\/\ .]+$/', $filePath) || in_array($baseName, ['.gitignore'])) {
+        Log::debug("Requested file download: $filePath");
+
+        if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[\p{L}0-9_\-\/\ .]+$/u', $filePath) || in_array($baseName, ['.gitignore'])) {
             return response()->json(['error' => 'Invalid file path'], 400);
         }
 
@@ -47,6 +50,8 @@ class FileController extends Controller {
             'files'   => 'required|array',
             'files.*' => 'required|string',
         ]);
+
+        $filesPaths['files'] = array_map(fn ($path) => urldecode($path), $filesPaths['files']);
 
         $tempDir = storage_path('app/temp');
 
@@ -66,7 +71,7 @@ class FileController extends Controller {
         $filesAdded = 0;
 
         foreach ($filesPaths['files'] as $filePath) {
-            if (empty($filePath) || in_array(basename($filePath), ['.gitignore'])) {
+            if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[\p{L}0-9_\-\/\ .]+$/u', $filePath) || in_array(basename($filePath), ['.gitignore'])) {
                 continue;
             }
 
@@ -182,7 +187,15 @@ class FileController extends Controller {
 
         $files = collect(Storage::files("$basePath/", true))->filter(function ($file) use ($clients, $type, $hiddenFiles) {
             if ($type === 'certificates') {
-                return !in_array(Str::lower(basename($file)), $hiddenFiles);
+                if (!empty($clients) && !collect($clients)->contains(fn ($client) => Str::contains(Str::slug(basename($file)), $client))) {
+                    return false;
+                }
+
+                if (!in_array(Str::lower(basename($file)), $hiddenFiles)) {
+                    return false;
+                }
+
+                return true;
             }
 
             if (in_array(Str::lower(basename($file)), $hiddenFiles)) {
@@ -202,7 +215,16 @@ class FileController extends Controller {
             ->values()
             ->all();
 
-        return array_map(function ($file) use ($year, $month, $basePath) {
+        return array_map(function ($file) use ($year, $month, $basePath, $type) {
+            if ($type === 'certificates') {
+                return [
+                    'filename'     => basename($file),
+                    'size'         => round(Storage::size($file) / 1024, 2),
+                    'lastModified' => Carbon::createFromTimestamp(Storage::lastModified($file), 'America/Recife')->toDateTimeString(),
+                    'url'          => str_replace('certificates/', '', $file)
+                ];
+            }
+
             return [
                 'filename'     => basename($file),
                 'year'         => $year == 'all' ? explode('/', str_replace('archives/', '', $file))[0] : $year,
@@ -236,8 +258,6 @@ class FileController extends Controller {
     public function archives(Request $request, string $year = 'all', string $month = 'all') {
         try {
             $client = $request->client ?? '';
-
-            Log::debug($client);
 
             $clients = $this->getValidClients($request, $client);
 
@@ -281,7 +301,7 @@ class FileController extends Controller {
         try {
             $verifiedClients = $this->getValidClients($request, '');
 
-            $files = $this->files('', '', $verifiedClients, 'certificates/', 'certificates');
+            $files = $this->files('all', 'all', $verifiedClients, 'certificates/', 'certificates');
 
             if (!$files) {
                 throw new BadRequestHttpException('No files found.');

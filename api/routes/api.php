@@ -97,7 +97,10 @@ Route::middleware([
     });
 });
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware([
+    'auth:api',
+    RoleMiddleware::class . ':contador'
+])->group(function () {
     Route::group(['prefix' => 'file'], function () {
         Route::get('available-years', [
             FileController::class,
@@ -129,6 +132,11 @@ Route::middleware('auth:api')->group(function () {
             'certificates'
         ]);
     });
+
+    Route::get('client', [
+        PersonController::class,
+        'getClients'
+    ]);
 });
 
 Route::get('file/download-public/{filename}', [

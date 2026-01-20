@@ -50,6 +50,21 @@ class PersonController extends Controller implements HasMiddleware {
         ]);
     }
 
+    public function getClients(Request $request) {
+        $search = $request->search ?? '';
+        $filter = $request->filter ?? 'nome';
+
+        $user = auth()->user();
+
+        $clients = Person::where('tipo', '=', 'cliente')
+            ->where('contador', '=', $user->login)
+            ->where($filter, 'like', "%$search%")
+            ->orderBy($filter)
+            ->get();
+
+        return PersonResource::collection($clients);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
