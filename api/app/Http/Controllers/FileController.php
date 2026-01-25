@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Person;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -14,19 +15,19 @@ use function in_array;
 
 class FileController extends Controller {
     public function downloadPublicFile(string $filePath) {
-        $filePath = urldecode($filePath);
+        $filePath = trim(urldecode($filePath));
+
+        Log::debug(Storage::disk('public')->exists($filePath) == true ? 'ok' : 'not found');
 
         if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[\p{L}0-9_\-\/\ .]+$/u', $filePath) || in_array(basename($filePath), ['.gitignore'])) {
             return response()->json(['error' => 'Invalid file path'], 400);
         }
 
-        $filePath = public_path((string) $filePath);
-
-        if (!file_exists($filePath)) {
+        if (!Storage::disk('public')->exists($filePath)) {
             return response()->json(['error' => 'File not found'], 404);
         }
 
-        return response()->download($filePath);
+        return response()->download(Storage::disk('public')->path($filePath), $filePath);
     }
 
     public function downloadPrivateFile(string $filePath) {
@@ -236,8 +237,8 @@ class FileController extends Controller {
         }, $files);
     }
 
-    private function getValidClients(Request $request, string $client) {
-        $user = auth()->user();
+    private function getValidClients(int $userId, string $client) {
+        $user = User::findOrFail($userId, ['login']);
 
         $validClients = Person::where('tipo', 'cliente')
             ->where('contador', $user->login)
@@ -255,11 +256,11 @@ class FileController extends Controller {
         }, $validClients);
     }
 
-    public function archives(Request $request, string $year = 'all', string $month = 'all') {
+    public function archives(Request $request, int $userId, string $year = 'all', string $month = 'all') {
         try {
             $client = $request->client ?? '';
 
-            $clients = $this->getValidClients($request, $client);
+            $clients = $this->getValidClients($userId, $client);
 
             $files = $this->files($year, $month, $clients, 'archives/', 'archives');
 
@@ -276,11 +277,11 @@ class FileController extends Controller {
         }
     }
 
-    public function speds(Request $request, string $year = 'all', string $month = 'all') {
+    public function speds(Request $request, int $userId, string $year = 'all', string $month = 'all') {
         try {
             $client = $request->client ?? '';
 
-            $clients = $this->getValidClients($request, $client);
+            $clients = $this->getValidClients($userId, $client);
 
             $files = $this->files($year, $month, $clients, 'archives/', 'sped');
 
@@ -297,9 +298,9 @@ class FileController extends Controller {
         }
     }
 
-    public function certificates(Request $request) {
+    public function certificates(Request $request, int $userId) {
         try {
-            $verifiedClients = $this->getValidClients($request, '');
+            $verifiedClients = $this->getValidClients($userId, '');
 
             $files = $this->files('all', 'all', $verifiedClients, 'certificates/', 'certificates');
 

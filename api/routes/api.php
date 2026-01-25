@@ -117,20 +117,20 @@ Route::middleware([
             'downloadMultipleFiles'
         ]);
 
-        Route::get('archive/{year}/{month}', [
+        Route::get('archive/{userId}/{year}/{month}', [
             FileController::class,
             'archives'
-        ]);
+        ])->where('userId', '[0-9]+');
 
-        Route::get('sped/{year}/{month}', [
+        Route::get('sped/{userId}/{year}/{month}', [
             FileController::class,
             'speds'
-        ]);
+        ])->where('userId', '[0-9]+');
 
-        Route::get('certificate', [
+        Route::get('certificate/{userId}', [
             FileController::class,
             'certificates'
-        ]);
+        ])->where('userId', '[0-9]+');
     });
 
     Route::get('client', [
