@@ -99,7 +99,7 @@ Route::middleware([
 
 Route::middleware([
     'auth:api',
-    RoleMiddleware::class . ':contador'
+    RoleMiddleware::class . ':contador,admin'
 ])->group(function () {
     Route::group(['prefix' => 'file'], function () {
         Route::get('available-years', [
@@ -133,10 +133,10 @@ Route::middleware([
         ])->where('userId', '[0-9]+');
     });
 
-    Route::get('client', [
+    Route::get('client/{userId}', [
         PersonController::class,
         'getClients'
-    ]);
+    ])->where('userId', '[0-9]+');
 });
 
 Route::get('file/download-public/{filename}', [

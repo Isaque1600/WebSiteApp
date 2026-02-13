@@ -240,8 +240,8 @@ class FileController extends Controller {
     private function getValidClients(int $userId, string $client) {
         $user = User::findOrFail($userId, ['login']);
 
-        $validClients = Person::where('tipo', 'cliente')
-            ->where('contador', $user->login)
+        $validClients = Person::where('tipo', '=', 'cliente')
+            ->where('contador', '=', $user->login)
             ->where('nome', 'LIKE', "%$client%")
             ->orderBy("nome", "asc")
             ->pluck('nome')
