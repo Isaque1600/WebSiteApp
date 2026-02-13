@@ -1,17 +1,20 @@
-import { useAuth } from "@/hooks/useAuth";
 import React from "react";
 import { twJoin } from "tailwind-merge";
+import { ContadorSelect } from "./ContadorSelect";
 
 type HeaderProps = {
   pageName?: string;
   children?: React.ReactNode;
   className?: string;
+  onContadorChange?: (contadorId: number | null) => void;
 };
 
-export function Header({ pageName, children, className }: HeaderProps) {
-  const { me } = useAuth();
-  const { data: user } = me();
-
+export function Header({
+  pageName,
+  children,
+  className,
+  onContadorChange,
+}: HeaderProps) {
   return (
     <header
       className={twJoin(
@@ -19,9 +22,8 @@ export function Header({ pageName, children, className }: HeaderProps) {
         className,
       )}
     >
-      <h1 className="text-lg">
-        {pageName || "Arquivos Fiscais"} - {user?.login.toUpperCase()}
-      </h1>
+      <h1 className="mr-2 text-lg">{pageName || "Arquivos Fiscais"}</h1>
+      <ContadorSelect onContadorChange={onContadorChange} className="flex-1" />
       {children}
     </header>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Archive,
   BarChart4,
   FilePlus,
   Home,
@@ -107,6 +108,13 @@ export default function SideBar({ sideBar }: Props) {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+      <Link
+        href={"/contador"}
+        className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm"
+      >
+        <Archive />
+        <span className="max-lg:hidden">Contadores</span>
+      </Link>
       <Link
         href={"/logout"}
         className="flex h-11 flex-row items-center justify-between px-2 py-2 hover:bg-neutral-900 hover:shadow-sm"

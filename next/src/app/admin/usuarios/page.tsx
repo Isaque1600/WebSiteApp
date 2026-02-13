@@ -14,11 +14,11 @@ import { usePerson } from "@/hooks/Person/usePerson";
 import { UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 type Props = {};
 
-export default function Usuarios({}: Props) {
+function UsuariosContent() {
   const [type, setType] = useState<"cliente" | "contador">("cliente");
   const [status, setStatus] = useState<"ativo" | "inativo">("ativo");
   const searchParams = useSearchParams();
@@ -134,5 +134,13 @@ export default function Usuarios({}: Props) {
         )}
       </div>
     </Section.Root>
+  );
+}
+
+export default function Usuarios({}: Props) {
+  return (
+    <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+      <UsuariosContent />
+    </Suspense>
   );
 }

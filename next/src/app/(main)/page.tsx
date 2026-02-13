@@ -1,18 +1,23 @@
+"use client";
+
 import { Main } from "@/_components/main/Main";
+import { useFile } from "@/hooks/Files/useFiles";
 
 export default function Index() {
+  const { downloadPublicFile } = useFile();
+  const { mutate: downloadPublic } = downloadPublicFile;
+
   return (
     <Main className="flex-row items-start justify-around max-md:flex-col max-md:items-center max-md:gap-6">
       <div className="flex w-1/3 flex-col items-center justify-center gap-1 text-center">
         <h1 className="title text-xl font-medium">Acesso Remoto</h1>
         <div className="links flex w-1/2 min-w-[250px] flex-col gap-2 text-lg">
-          <a
+          <button
             className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
-            download={true}
-            href={`${process.env.BASEPATH}/file/download/../*`}
+            onClick={() => downloadPublic("team_viewer_13.exe")}
           >
             Team Viewer 13
-          </a>
+          </button>
           <a
             className="w-full text-nowrap rounded-md bg-red-650 p-2 hover:text-neutral-400"
             download={true}

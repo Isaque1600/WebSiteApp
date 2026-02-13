@@ -38,15 +38,20 @@ async function fetchUsers({
 }
 
 async function fetchClients({
+  userId,
   search,
   search_by,
-}: { search?: string; search_by?: string } = {}) {
+}: {
+  search?: string;
+  search_by?: string;
+  userId: string;
+}) {
   try {
     const params = new URLSearchParams();
     if (search) params.append("search", search);
     if (search_by) params.append("filter", search_by);
 
-    const response = await api.get(`/client?${params.toString()}`);
+    const response = await api.get(`/client/${userId}?${params.toString()}`);
 
     return response.data;
   } catch (error) {
@@ -110,7 +115,11 @@ export const usePerson = () => {
       placeholderData: keepPreviousData,
     });
 
-  const getClients = (filters: { search?: string; search_by?: string } = {}) =>
+  const getClients = (filters: {
+    search?: string;
+    search_by?: string;
+    userId: string;
+  }) =>
     useQuery({
       queryKey: [...PERSON_QUERY_KEY, "clients", filters],
       queryFn: () => fetchClients(filters),

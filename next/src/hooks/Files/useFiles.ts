@@ -1,6 +1,6 @@
 import api from "@/lib/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { toast } from "sonner";
 
 export const FILES_QUERY_KEY = ["files"];
@@ -15,9 +15,9 @@ async function fetchYears() {
   }
 }
 
-async function fetchCertificates() {
+async function fetchCertificates(userId: number) {
   try {
-    const response = await api.get("/file/certificate");
+    const response = await api.get(`/file/certificate/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching certificates:", error);
@@ -29,17 +29,19 @@ async function fetchArchives({
   year,
   month,
   client,
+  userId,
 }: {
   year: string;
   month: string;
   client: string;
+  userId: number;
 }) {
   try {
     const params = new URLSearchParams();
     if (client !== "null") params.append("client", client);
 
     const response = await api.get(
-      `/file/archive/${year}/${month}?${params.toString()}`,
+      `/file/archive/${userId}/${year}/${month}?${params.toString()}`,
     );
     return response.data;
   } catch (error) {
@@ -52,17 +54,19 @@ async function fetchSpeds({
   year,
   month,
   client,
+  userId,
 }: {
   year: string;
   month: string;
   client: string;
+  userId: number;
 }) {
   try {
     const params = new URLSearchParams();
     if (client !== "null") params.append("client", client);
 
     const response = await api.get(
-      `/file/sped/${year}/${month}?${params.toString()}`,
+      `/file/sped/${userId}/${year}/${month}?${params.toString()}`,
     );
     return response.data;
   } catch (error) {
@@ -152,52 +156,34 @@ export const useFile = () => {
       queryFn: () => fetchYears(),
     });
 
-  const getCertificates = () =>
+  const getCertificates = (userId: number) =>
     useQuery({
-      queryKey: [...FILES_QUERY_KEY, "certificates"],
-      queryFn: () => fetchCertificates(),
-      retry: (failureCount, error) => {
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 400) {
-            return false;
-          }
-        }
-        return failureCount < 2;
-      },
+      queryKey: [...FILES_QUERY_KEY, "certificates", userId],
+      queryFn: () => fetchCertificates(userId),
     });
 
   const getArchives = (filters: {
     year: string;
     month: string;
     client: string;
+    userId: number;
   }) =>
     useQuery({
       queryKey: [...FILES_QUERY_KEY, "archives", filters],
       queryFn: () => fetchArchives(filters),
       enabled: !!filters.year && !!filters.month,
-      retry: (failureCount, error) => {
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 400) {
-            return false;
-          }
-        }
-        return failureCount < 2;
-      },
     });
 
-  const getSpeds = (filters: { year: string; month: string; client: string }) =>
+  const getSpeds = (filters: {
+    year: string;
+    month: string;
+    client: string;
+    userId: number;
+  }) =>
     useQuery({
       queryKey: [...FILES_QUERY_KEY, "speds", filters],
       queryFn: () => fetchSpeds(filters),
       enabled: !!filters.year && !!filters.month,
-      retry: (failureCount, error) => {
-        if (error instanceof AxiosError) {
-          if (error.response?.status === 400) {
-            return false;
-          }
-        }
-        return failureCount < 2;
-      },
     });
 
   const downloadPublicFile = useMutation({

@@ -1,6 +1,8 @@
+"use client";
 import { Separator } from "@/_components/ui/separator";
 import logo from "@/assets/imgs/Logo.png";
-import { FileTextIcon, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { FileTextIcon, LogOut, ShieldUser } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import NavLinkContador from "./NavLinkContador";
@@ -10,6 +12,9 @@ type SideBarProps = {
 };
 
 export default function SideBar({ className, ...props }: SideBarProps) {
+  const { me } = useAuth();
+  const { data: user } = me();
+
   return (
     <nav className={className}>
       <Link className="w-full" href={"/"}>
@@ -52,6 +57,14 @@ export default function SideBar({ className, ...props }: SideBarProps) {
         orientation="horizontal"
         className="my-4 w-full bg-neutral-700"
       />
+      {user?.type === "admin" && (
+        <NavLinkContador
+          href={"/admin"}
+          prefix={<ShieldUser className="max-lg:size-5" />}
+        >
+          Admin Page
+        </NavLinkContador>
+      )}
       <NavLinkContador
         href={"/logout"}
         prefix={<LogOut className="max-lg:size-5" />}

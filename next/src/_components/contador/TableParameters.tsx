@@ -2,8 +2,8 @@
 
 import { useFile } from "@/hooks/Files/useFiles";
 import { usePerson } from "@/hooks/Person/usePerson";
-import { useAuth } from "@/hooks/useAuth";
 import { Person } from "@/types/Person";
+import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import {
@@ -19,16 +19,15 @@ type TableParametersProps = {
   setYear: (year: string) => void;
   setMonth: (month: string) => void;
   setName: (name: string) => void;
+  selectedContadorId?: number | null;
 };
 
 export function TableParameters({
   setYear,
   setMonth,
   setName,
+  selectedContadorId,
 }: TableParametersProps) {
-  const { me } = useAuth();
-  const { data: user } = me();
-
   const { getYears } = useFile();
   const { getClients } = usePerson();
   const {
@@ -36,7 +35,9 @@ export function TableParameters({
     isLoading: isClientsLoading,
     isError: isClientsError,
     error: clientsError,
-  } = getClients();
+  } = getClients({
+    userId: selectedContadorId ? `${selectedContadorId}` : "0",
+  });
 
   const {
     data: years,
@@ -46,18 +47,38 @@ export function TableParameters({
   } = getYears();
 
   useEffect(() => {
-    if (isClientsError) {
-      toast.error("Erro ao carregar clientes.");
-      console.error("Error fetching clients:", clientsError);
+    if (!isClientsError) {
+      return;
     }
 
-    if (isYearsError) {
-      toast.error("Erro ao carregar anos.");
-      console.error("Error fetching years:", yearsError);
+    if (clientsError instanceof AxiosError) {
+      if (clientsError.response?.status === 404) {
+        toast.error("Nenhum cliente encontrado.");
+        return;
+      }
     }
-  }, [isClientsError, isYearsError, clientsError, yearsError]);
+
+    toast.error("Erro ao carregar clientes.");
+  }, [isClientsError, clientsError]);
+
+  useEffect(() => {
+    if (!isYearsError) {
+      return;
+    }
+    toast.error("Erro ao carregar anos.");
+  }, [isYearsError, yearsError]);
 
   if (isClientsError || isYearsError) {
+    if (clientsError instanceof AxiosError) {
+      if (clientsError.response?.status === 404) {
+        return (
+          <div className="flex flex-row items-center justify-center gap-2">
+            <span className="text-red-600">Nenhum cliente encontrado.</span>
+          </div>
+        );
+      }
+    }
+
     return (
       <div className="flex flex-row items-center justify-center gap-2">
         <span className="text-red-600">Erro ao carregar parâmetros.</span>

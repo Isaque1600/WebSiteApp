@@ -23,7 +23,7 @@ export default function ContadorLayout({ children }: ContadorLayoutProps) {
     router.replace("/login");
   }
 
-  if (userData && userData.type !== "contador") {
+  if (userData && userData.type !== "contador" && userData.type !== "admin") {
     toast.error(
       "Acesso negado. Você não tem permissão para acessar esta área.",
       { id: "access-denied" },

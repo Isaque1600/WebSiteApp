@@ -6,6 +6,7 @@ import { TableParameters } from "@/_components/contador/TableParameters";
 import { Utilities } from "@/_components/contador/Utilities";
 import { Separator } from "@/_components/ui/separator";
 import { useFile } from "@/hooks/Files/useFiles";
+import { useAuth } from "@/hooks/useAuth";
 import { Row } from "@tanstack/react-table";
 import { AxiosError } from "axios";
 import { Loader2, SearchX } from "lucide-react";
@@ -18,8 +19,23 @@ export default function Speds() {
   const [year, setYear] = useState("all");
   const [month, setMonth] = useState("all");
   const [name, setName] = useState("null");
+  const [selectedContadorId, setSelectedContadorId] = useState<number | null>(
+    null,
+  );
 
   const { getSpeds, downloadFile, downloadMultipleFiles } = useFile();
+  const { me } = useAuth();
+  const { data: user } = me();
+
+  // Initialize selectedContadorId based on user type
+  useEffect(() => {
+    if (user) {
+      if (user.type === "contador") {
+        setSelectedContadorId(user.id);
+      }
+      // For admin, let ContadorSelect handle the initial selection
+    }
+  }, [user]);
 
   const {
     mutateAsync: downloadMultiple,
@@ -43,30 +59,31 @@ export default function Speds() {
     year: year,
     month: month,
     client: name,
+    userId: user?.id || 0,
   });
 
-  useEffect(() => {
-    if (isDownloadMultipleSuccess || isDownloadSuccess) {
-      toast.success("Download iniciado!");
-    }
+  const handleContadorChange = (contadorId: number | null) => {
+    setSelectedContadorId(contadorId);
+  };
 
+  useEffect(() => {
     if (isDownloadError || isDownloadMultipleError) {
       toast.error("Erro ao iniciar o download!");
     }
-  }, [
-    isDownloadMultipleSuccess,
-    isDownloadSuccess,
-    isDownloadError,
-    isDownloadMultipleError,
-  ]);
+  }, [isDownloadError, isDownloadMultipleError]);
 
   return (
     <>
-      <Header className="w-full justify-between" pageName="SPEDS">
+      <Header
+        className="w-full justify-between"
+        pageName="SPEDS"
+        onContadorChange={handleContadorChange}
+      >
         <TableParameters
           setMonth={setMonth}
           setYear={setYear}
           setName={setName}
+          selectedContadorId={selectedContadorId}
         />
       </Header>
       <div className="h-full overflow-hidden rounded-lg bg-neutral-100 shadow-md shadow-neutral-400">
