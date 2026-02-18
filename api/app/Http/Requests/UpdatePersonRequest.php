@@ -84,7 +84,7 @@ class UpdatePersonRequest extends FormRequest {
             ],
             'ven_cert'     => [
                 'nullable',
-                'date'
+                'date_format:d/m/Y'
             ],
             'email'        => [
                 'nullable',

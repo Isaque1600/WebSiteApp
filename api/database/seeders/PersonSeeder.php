@@ -20,9 +20,10 @@ class PersonSeeder extends Seeder {
                         'senha'     => Crypt::encrypt('password'),
                         'type'      => $person->tipo,
                         'situation' => fake()->randomElement([
-                                    'active',
-                                    'inactive'
-                                ]),
+                            'active',
+                            'inactive'
+                        ]),
+                        'person_id' => $person->cod_pes
                     ]);
                 }
             })
