@@ -13,8 +13,8 @@ export default function Contato() {
       <div className="flex w-full flex-col items-center max-md:w-full">
         <h1 className="text-3xl font-semibold text-red-650">Contate-nos</h1>
         <a
-          className="h-fit w-fit bg-transparent p-4 hover:bg-transparent"
-          href="https://wa.me/+5583999105652"
+          className="h-fit w-fit rounded-full bg-transparent p-1 hover:bg-transparent"
+          href="https://wa.me/+5583991710866"
           target="_blank"
         >
           <WhatsAppIcon className="text-7xl text-green-600" />

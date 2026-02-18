@@ -40,7 +40,7 @@ async function loginReq(email: string, password: string): Promise<boolean> {
         }
       }
     }
-    return false;
+    throw new Error("Erro ao fazer login");
   }
 }
 

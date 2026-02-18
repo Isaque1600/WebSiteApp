@@ -16,9 +16,9 @@ export default function Admin() {
 
   const { get: getUsers } = usePerson();
   const { data: usersAccountantReturn, isLoading: isUsersAccountantLoading } =
-    getUsers({ type: "contador" });
+    getUsers({ type: "contador", status: "ativo" });
   const { data: usersClientReturn, isLoading: isUsersClientLoading } = getUsers(
-    { type: "cliente" },
+    { type: "cliente", status: "ativo" },
   );
   const isUsersLoading = isUsersAccountantLoading || isUsersClientLoading;
   const usersData = {

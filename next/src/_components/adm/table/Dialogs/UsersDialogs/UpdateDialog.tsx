@@ -31,7 +31,6 @@ import { AxiosError } from "axios";
 import { Edit, FileX, Loader2, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import z from "zod";
 import { CustomDialog } from "../CustomDialog/CustomDialog";
 import UpdateDialog from "../UpdateDialog";
@@ -68,22 +67,19 @@ export default function UsersUpdateDialog({ user }: Props) {
   } = getById(String(user?.cod_pes), { enabled: updateOpen });
 
   const {
-    mutateAsync: updateUser,
+    mutate: updateUser,
     isPending,
     isSuccess,
     isError: isUpdateError,
+    error: updateError,
   } = update;
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success(`Usuário ${user.nome} atualizado com sucesso!`);
-
       setUpdateOpen(false);
     }
 
     if (isUpdateError) {
-      toast.error(`Erro ao atualizar o usuário ${user.nome}. Tente novamente.`);
-
       setUpdateOpen(false);
     }
   }, [isSuccess, isUpdateError]);
@@ -177,11 +173,17 @@ export default function UsersUpdateDialog({ user }: Props) {
       uf: uf.toUpperCase(),
     };
 
-    await updateUser({
-      id: String(user.cod_pes),
-      currentType: String(user.tipo),
-      data: payload,
-    });
+    try {
+      updateUser({
+        id: String(user.cod_pes),
+        currentType: String(user.tipo),
+        data: payload,
+      });
+    } catch (error) {
+      console.error("Error in mutation call:", error);
+      // Even though we're using mutate instead of mutateAsync,
+      // we add this catch as an extra safety net
+    }
   };
 
   let formatCharsDate = {

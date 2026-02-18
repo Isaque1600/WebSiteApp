@@ -23,8 +23,17 @@ export function ReactQueryProvider({
                 ) {
                   return false;
                 }
+                if (error.response?.status === 401) {
+                  return false;
+                }
               }
               return failureCount < 3;
+            },
+          },
+          mutations: {
+            retry: false,
+            onError: (error) => {
+              console.error("Mutation error:", error);
             },
           },
         },

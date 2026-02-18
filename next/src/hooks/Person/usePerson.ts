@@ -141,30 +141,33 @@ export const usePerson = () => {
 
   const create = useMutation({
     mutationFn: (data: PersonFormData) => createPerson(data),
-    onMutate: async (_, variables) => {
+    onMutate: async (data) => {
       await queryClient.cancelQueries({ queryKey: PERSON_QUERY_KEY });
+
+      const previousData = queryClient.getQueriesData({
+        queryKey: PERSON_QUERY_KEY,
+      });
 
       queryClient.setQueriesData(
         { queryKey: PERSON_QUERY_KEY },
         (oldData: Person[] | undefined) => {
           if (!oldData || !Array.isArray(oldData)) return oldData;
 
-          return [...oldData, { ...variables }];
+          return [...oldData, { ...data }];
         },
       );
 
-      return {
-        previousData: queryClient.getQueriesData({
-          queryKey: PERSON_QUERY_KEY,
-        }),
-      };
+      return { previousData };
     },
-    onError: (_, __, result) => {
+    onError: (_, __, context) => {
       toast.error("Erro ao criar pessoa.", { id: "error" });
-      queryClient.setQueriesData(
-        { queryKey: PERSON_QUERY_KEY },
-        result?.previousData,
-      );
+
+      // Restore all previous query data
+      if (context?.previousData) {
+        context.previousData.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
     },
     onSettled: (_, error) => {
       if (!error) {
@@ -197,19 +200,22 @@ export const usePerson = () => {
           if (!oldData || !Array.isArray(oldData)) return oldData;
 
           return oldData.map((person) =>
-            person.cod_pes === id ? { ...data, ...person } : person,
+            person.cod_pes === id ? { ...person, ...data } : person,
           );
         },
       );
 
       return { previousData };
     },
-    onError: (_, __, contenxt) => {
+    onError: (_, __, context) => {
       toast.error("Erro ao atualizar pessoa.", { id: "error" });
-      queryClient.setQueriesData(
-        { queryKey: PERSON_QUERY_KEY },
-        contenxt?.previousData,
-      );
+
+      // Restore all previous query data
+      if (context?.previousData) {
+        context.previousData.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
     },
     onSettled: (_, error) => {
       if (!error) {
@@ -241,10 +247,13 @@ export const usePerson = () => {
     },
     onError: (_, __, context) => {
       toast.error("Erro ao deletar pessoa.", { id: "error" });
-      queryClient.setQueriesData(
-        { queryKey: PERSON_QUERY_KEY },
-        context?.previousData,
-      );
+
+      // Restore all previous query data
+      if (context?.previousData) {
+        context.previousData.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
     },
     onSettled: (_, error) => {
       if (!error) {
