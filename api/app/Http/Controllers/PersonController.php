@@ -28,12 +28,10 @@ class PersonController extends Controller implements HasMiddleware {
         $stats    = $request->status ?? null;
 
         $query = Person::where('tipo', '=', $type)
-            ->where($filter, 'like', "%$search%")
-            ->where(function (Builder $query) use ($stats) {
-                if ($stats !== 'null') {
-                    $query->where('situacao', '=', $stats);
-                }
-            })
+            ->when(filled($search), fn (Builder $query) =>
+                $query->where($filter, 'like', "%{$search}%"))
+            ->when(filled($stats) && $stats !== 'null', fn (Builder $query) =>
+                $query->where('situacao', '=', $stats))
             ->with('user')
             ->orderBy($filter)
             ->paginate($per_page, page: $page);
@@ -58,7 +56,9 @@ class PersonController extends Controller implements HasMiddleware {
 
         $clients = Person::where('tipo', '=', 'cliente')
             ->where('contador', '=', $user->login)
-            ->where($filter, 'like', "%$search%")
+            ->when(filled($search), fn (Builder $query) =>
+                $query->where($filter, 'like', "%{$search}%")
+            )
             ->orderBy($filter)
             ->get();
 

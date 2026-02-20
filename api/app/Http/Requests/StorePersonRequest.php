@@ -22,8 +22,9 @@ class StorePersonRequest extends FormRequest {
         return [
             'nome'         => [
                 'required_if:tipo,contador',
-                'unique:people,nome',
-                'string'
+                'nullable',
+                'string',
+                'unique:people,nome'
             ],
             'razao'        => [
                 'unique:people,razao',

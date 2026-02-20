@@ -46,8 +46,7 @@ class UserColumnController {
      */
     public function update(UpdateUserColumnRequest $request, string $user_id) {
         $userColumn = UserColumn::where('user_id', '=', $user_id)
-            ->firstOrFail()
-            ->update($request->validated(), []);
+            ->updateOrCreate(['user_id' => $user_id], $request->validated());
 
         return response()->json([
             'data'    => $userColumn,
