@@ -30,7 +30,7 @@ export default function SideBar({ sideBar }: Props) {
   return (
     <nav
       data-toggled={sideBar}
-      className="fixed left-0 h-[calc(100vh-7rem)] w-36 select-none bg-neutral-800 text-lg text-neutral-100 shadow shadow-neutral-950 duration-100 ease-in-out data-[toggled=false]:-left-36 data-[toggled=false]:shadow-none max-lg:w-11"
+      className="fixed left-0 h-[calc(100vh-7rem)] w-36 select-none bg-neutral-800 text-lg text-neutral-100 shadow shadow-neutral-950 duration-100 ease-in-out data-[toggled=false]:-left-36 data-[toggled=false]:shadow-none max-lg:w-11 max-lg:data-[toggled=false]:-left-11"
     >
       <Link
         href={"/admin"}

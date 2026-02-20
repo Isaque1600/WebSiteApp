@@ -38,6 +38,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   pages: Array<number>;
   page: number;
+  total: number;
   search: string;
   filter: string;
   searchColumns: string[];
@@ -47,6 +48,7 @@ export function DataTable<TData, TValue>({
   data,
   pages,
   page,
+  total,
   search,
   filter,
   searchColumns,
@@ -124,14 +126,18 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="my-4 flex flex-col items-center">
-      <div className="flex w-full gap-10 py-4">
+      <div className="flex w-full items-center gap-10 py-4">
         <Search search={search} filter={filter} columns={searchColumns} />
         <PerPage per_page={per_page} />
+        <p className="ml-auto text-neutral-100">
+          Exibindo {data.length} de {per_page} registros na pagina
+        </p>
+        <p className="text-neutral-100">Total de registros: {total}</p>
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild className="w-56">
             <Button
               variant="outline"
-              className="h ml-auto border-none bg-neutral-600 text-neutral-100 shadow hover:bg-neutral-600 hover:bg-opacity-60 hover:text-neutral-100"
+              className="border-none bg-neutral-600 text-neutral-100 shadow hover:bg-neutral-600 hover:bg-opacity-60 hover:text-neutral-100"
             >
               Selecione as Colunas a Exibir
             </Button>

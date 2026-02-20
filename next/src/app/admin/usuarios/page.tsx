@@ -127,6 +127,7 @@ function UsuariosContent() {
             data={data.data}
             page={parseInt(page)}
             pages={Array.from({ length: data.meta.last_page }, (_, i) => i + 1)}
+            total={data.meta.total}
             search={search}
             searchColumns={columnsAvailable.filter(
               (col) => !["ações", "tipo"].includes(col),
