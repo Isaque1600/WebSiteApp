@@ -1,5 +1,6 @@
 "use client";
 
+import { formattedColumns } from "@/types/Columns";
 import { SearchIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
@@ -25,10 +26,13 @@ export default function Search({ search, filter, columns }: Props) {
   const searchRef = useRef<HTMLInputElement>(null);
 
   const handleClick = () => {
+    const filters = new URLSearchParams();
+    filters.set("filter", filter);
     if (searchRef.current?.value)
-      router.push(
-        `/admin/usuarios?filter=${filter}&search=${searchRef.current?.value}${per_page ? `&per_page=${per_page}` : ""}`,
-      );
+      filters.set("search", searchRef.current.value);
+    if (per_page) filters.set("per_page", per_page);
+
+    router.push(`/admin/usuarios?${filters.toString()}`);
   };
 
   return (
@@ -56,6 +60,7 @@ export default function Search({ search, filter, columns }: Props) {
         defaultValue={filter}
         onValueChange={(e) => {
           filter = e;
+          handleClick();
         }}
       >
         <SelectTrigger className="min-w-36 border-none bg-neutral-600 capitalize text-neutral-100 shadow placeholder:text-neutral-400">
@@ -64,7 +69,7 @@ export default function Search({ search, filter, columns }: Props) {
         <SelectContent className="border-none bg-neutral-600 text-neutral-100 shadow-md">
           {columns.map((column) => (
             <SelectItem className="capitalize" key={column} value={column}>
-              {column}
+              {formattedColumns[column as keyof typeof formattedColumns]}
             </SelectItem>
           ))}
         </SelectContent>

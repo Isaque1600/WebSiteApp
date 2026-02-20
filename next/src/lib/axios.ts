@@ -23,7 +23,6 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     if (
       error.response?.status === 401 &&
-      (error.response.data as any).message === "Unauthorized" &&
       error.config?.url !== "/auth/logout"
     ) {
       if (toast.getToasts().some((t) => t.id === "session-expired")) {

@@ -2,6 +2,7 @@
 
 import { Section } from "@/_components/adm/section/Section";
 import { DataTable } from "@/_components/adm/table/data-table";
+import { columnsAvailable } from "@/_components/adm/table/UsersColumn";
 import {
   Select,
   SelectContent,
@@ -127,7 +128,9 @@ function UsuariosContent() {
             page={parseInt(page)}
             pages={Array.from({ length: data.meta.last_page }, (_, i) => i + 1)}
             search={search}
-            searchColumns={["nome"]}
+            searchColumns={columnsAvailable.filter(
+              (col) => !["ações", "tipo"].includes(col),
+            )}
             filter={filter}
             per_page={parseInt(perPage)}
           />

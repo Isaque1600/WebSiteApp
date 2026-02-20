@@ -25,6 +25,7 @@ export type Person = {
   email_backup?: string;
   senha_backup?: string;
   tipo?: "contador" | "cliente";
+  user_id?: number;
 };
 
 export type PersonFormData = {

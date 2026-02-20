@@ -73,6 +73,7 @@ async function fetchUserById(id: string) {
 
 async function createPerson(data: PersonFormData) {
   try {
+    console.log(data);
     const response = await api.post(`/person/${data.tipo}`, data);
     return response.data;
   } catch (error) {

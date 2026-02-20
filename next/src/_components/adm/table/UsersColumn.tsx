@@ -24,6 +24,7 @@ export const columnsAvailable = [
   "cep",
   "uf",
   "ie",
+  "cnpj",
   "contato",
   "sistema",
   "serial",

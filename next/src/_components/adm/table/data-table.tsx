@@ -67,6 +67,7 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, _setColumnVisibility] = useState<VisibilityState>(
     {},
   );
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoading && userColumnsData) {
@@ -101,8 +102,6 @@ export function DataTable<TData, TValue>({
       .filter(([_, isVisible]) => !isVisible)
       .map(([columnId]) => columnId);
 
-    console.log(hiddenColumns);
-
     updateUserColumns({
       id: String(user?.id),
       columns: hiddenColumns,
@@ -128,7 +127,7 @@ export function DataTable<TData, TValue>({
       <div className="flex w-full gap-10 py-4">
         <Search search={search} filter={filter} columns={searchColumns} />
         <PerPage per_page={per_page} />
-        <DropdownMenu>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild className="w-56">
             <Button
               variant="outline"
@@ -148,11 +147,12 @@ export function DataTable<TData, TValue>({
                 .map((column) => (
                   <DropdownMenuCheckboxItem
                     key={column.id}
-                    className="capitalize"
+                    className="cursor-pointer capitalize"
                     checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
+                    onCheckedChange={(value) => {
+                      column.toggleVisibility(!!value);
+                    }}
+                    onSelect={(e) => e.preventDefault()}
                     disabled={!column.getCanHide()}
                   >
                     {column.id}

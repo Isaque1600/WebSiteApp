@@ -24,6 +24,7 @@ import { Switch } from "@/_components/ui/switch";
 import { Textarea } from "@/_components/ui/textarea";
 import { usePerson } from "@/hooks/Person/usePerson";
 import { useSystem } from "@/hooks/Systems/useSystem";
+import { useMaskedDate } from "@/hooks/useMaskedDate";
 import { Person, PersonFormData } from "@/types/Person";
 import { System } from "@/types/System";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,6 +43,7 @@ type Props = {
 export default function UsersUpdateDialog({ user }: Props) {
   const [updateOpen, setUpdateOpen] = useState(false);
   const [type, _setType] = useState(user.tipo);
+  const { mask, formatChars, beforeMaskedValueChange } = useMaskedDate();
 
   const { get: getSys } = useSystem();
   const {
@@ -171,6 +173,7 @@ export default function UsersUpdateDialog({ user }: Props) {
       sped: sped ? "sim" : "nao",
       tipo: tipo as "cliente" | "contador",
       uf: uf.toUpperCase(),
+      ven_cert: values.ven_cert.split("/").reverse().join("-"),
     };
 
     try {
@@ -181,58 +184,7 @@ export default function UsersUpdateDialog({ user }: Props) {
       });
     } catch (error) {
       console.error("Error in mutation call:", error);
-      // Even though we're using mutate instead of mutateAsync,
-      // we add this catch as an extra safety net
     }
-  };
-
-  let formatCharsDate = {
-    D: "[0-3]",
-    d: "[0-9]",
-    m: "[0-9]",
-    M: "[01]",
-    9: "[0-9]",
-  };
-
-  const beforeMaskedValueChangeDate = (
-    newState: {
-      value: string;
-      selection: { start: number; end: number } | null;
-    },
-    oldState: {
-      value: string;
-      selection: { start: number; end: number } | null;
-    },
-    userInput: string,
-  ) => {
-    let { value } = newState;
-    const selection = newState.selection;
-    const cursorPosition = selection ? selection.start : null;
-
-    if (value.startsWith("0")) {
-      formatCharsDate["d"] = "[1-9]";
-    }
-
-    if (value.endsWith("0")) {
-      formatCharsDate["m"] = "[1-9]";
-    }
-
-    if (value.startsWith("3")) {
-      formatCharsDate["d"] = "[01]";
-    }
-
-    if (value.endsWith("1")) {
-      formatCharsDate["m"] = "[012]";
-    }
-
-    if (value[0] >= "3" && value[1] >= "0") {
-      formatCharsDate["m"] = "[012456789]";
-      if (value[3] == "0") {
-        formatCharsDate["m"] = "[12456789]";
-      }
-    }
-
-    return { value, selection: newState.selection };
   };
 
   if (isError && error) {
@@ -354,7 +306,7 @@ export default function UsersUpdateDialog({ user }: Props) {
                     <CustomInput
                       text="Nome Fantasia"
                       field={field}
-                      required={user.tipo === "contador"}
+                      required={type === "contador"}
                       isError={
                         type === "contador" && !!form.formState.errors.nome
                       }
@@ -722,15 +674,19 @@ export default function UsersUpdateDialog({ user }: Props) {
               name="ven_cert"
               render={({ field }) => (
                 <FormItem
-                  className={`w-full ${form.watch("sped").valueOf() || form.watch("nfe").valueOf() ? "" : "opacity-0"} transition duration-300 ease-in`}
+                  className={`w-full opacity-0 transition duration-300 ease-in data-[disabled=false]:opacity-100`}
+                  data-disabled={
+                    !form.watch("sped").valueOf() &&
+                    !form.watch("nfe").valueOf()
+                  }
                 >
                   <FormControl>
                     <CustomMaskedInput
                       text="Vencimento do Certificado"
-                      mask="Dd/Mm/9999"
+                      mask={mask}
                       maskChar=""
-                      formatChars={formatCharsDate}
-                      beforeMaskedValueChange={beforeMaskedValueChangeDate}
+                      formatChars={formatChars}
+                      beforeMaskedValueChange={beforeMaskedValueChange}
                       field={field}
                     />
                   </FormControl>
@@ -877,7 +833,7 @@ export default function UsersUpdateDialog({ user }: Props) {
           render={({ field }) => (
             <FormItem>
               <div className="relative">
-                <Label className="absolute -top-4 left-5 bg-neutral-700 px-2 text-lg text-neutral-100">
+                <Label className="absolute -top-4 left-5 bg-zinc-750 px-2 text-lg text-neutral-100">
                   Observação
                 </Label>
                 <FormControl>

@@ -27,6 +27,7 @@ import { Switch } from "@/_components/ui/switch";
 import { Textarea } from "@/_components/ui/textarea";
 import { usePerson } from "@/hooks/Person/usePerson";
 import { useSystem } from "@/hooks/Systems/useSystem";
+import { useMaskedDate } from "@/hooks/useMaskedDate";
 import { Errors } from "@/types/Errors";
 import { Person, PersonFormData } from "@/types/Person";
 import { System } from "@/types/System";
@@ -43,6 +44,7 @@ type Props = {};
 
 export default function Cadastrar({}: Props) {
   const [type, _setType] = useState("cliente");
+  const { mask, formatChars, beforeMaskedValueChange } = useMaskedDate();
 
   const { get: getSys } = useSystem();
   const {
@@ -112,7 +114,7 @@ export default function Cadastrar({}: Props) {
       email: "",
       email_backup: "",
       senha_backup: "",
-      tipo: "",
+      tipo: type,
       senha: "",
       situacao: true,
       nfe: false,
@@ -139,58 +141,11 @@ export default function Cadastrar({}: Props) {
       sped: sped ? "sim" : "nao",
       tipo: tipo as "cliente" | "contador",
       uf: uf.toUpperCase(),
+      ven_cert: values.ven_cert.split("/").reverse().join("-"),
     };
+    console.log(payload);
 
     await createPerson(payload);
-  };
-
-  let formatCharsDate = {
-    D: "[0-3]",
-    d: "[0-9]",
-    m: "[0-9]",
-    M: "[01]",
-    9: "[0-9]",
-  };
-
-  const beforeMaskedValueChangeDate = (
-    newState: {
-      value: string;
-      selection: { start: number; end: number } | null;
-    },
-    oldState: {
-      value: string;
-      selection: { start: number; end: number } | null;
-    },
-    userInput: string,
-  ) => {
-    let { value } = newState;
-    const selection = newState.selection;
-    const cursorPosition = selection ? selection.start : null;
-
-    if (value.startsWith("0")) {
-      formatCharsDate["d"] = "[1-9]";
-    }
-
-    if (value.endsWith("0")) {
-      formatCharsDate["m"] = "[1-9]";
-    }
-
-    if (value.startsWith("3")) {
-      formatCharsDate["d"] = "[01]";
-    }
-
-    if (value.endsWith("1")) {
-      formatCharsDate["m"] = "[012]";
-    }
-
-    if (value[0] >= "3" && value[1] >= "0") {
-      formatCharsDate["m"] = "[012456789]";
-      if (value[3] == "0") {
-        formatCharsDate["m"] = "[12456789]";
-      }
-    }
-
-    return { value, selection: newState.selection };
   };
 
   const setType = (value: string) => {
@@ -606,15 +561,19 @@ export default function Cadastrar({}: Props) {
                 name="ven_cert"
                 render={({ field }) => (
                   <FormItem
-                    className={`w-full ${form.watch("sped").valueOf() || form.watch("nfe").valueOf() ? "" : "opacity-0"} transition duration-300 ease-in`}
+                    className={`w-full opacity-0 transition duration-300 ease-in data-[disabled=false]:opacity-100`}
+                    data-disabled={
+                      !form.watch("sped").valueOf() &&
+                      !form.watch("nfe").valueOf()
+                    }
                   >
                     <FormControl>
                       <CustomMaskedInput
                         text="Vencimento do Certificado"
-                        mask="Dd/Mm/9999"
+                        mask={mask}
                         maskChar=""
-                        formatChars={formatCharsDate}
-                        beforeMaskedValueChange={beforeMaskedValueChangeDate}
+                        formatChars={formatChars}
+                        beforeMaskedValueChange={beforeMaskedValueChange}
                         field={field}
                       />
                     </FormControl>

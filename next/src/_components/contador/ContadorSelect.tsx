@@ -115,17 +115,20 @@ export function ContadorSelect({
       <div className={`flex items-center gap-2 ${className}`}>
         <Select
           onValueChange={handleContadorChange}
-          defaultValue={contadores.data[0]?.cod_pes}
+          defaultValue={contadores.data[0]?.user_id}
         >
           <SelectTrigger className="w-64 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner">
             <SelectValue placeholder="Selecione um contador" />
           </SelectTrigger>
           <SelectContent className="capitalize">
             {contadores.data.map((contador: Person) => (
-              <SelectItem key={contador.cod_pes} value={contador.cod_pes!}>
+              <SelectItem
+                key={contador.user_id}
+                value={String(contador.user_id!)}
+              >
                 {contador.nome ||
                   contador.razao ||
-                  `Contador #${contador.cod_pes}`}
+                  `Contador #${contador.user_id}`}
               </SelectItem>
             ))}
           </SelectContent>
