@@ -145,8 +145,8 @@ export function TableParameters({
         <SelectContent className="capitalize">
           <SelectItem value="null">Todos</SelectItem>
           {clients.data.map((client: Person, i: number) => (
-            <SelectItem key={i} value={client.nome || client.razao!}>
-              {client.nome || client.razao!}
+            <SelectItem key={i} value={client.razao!}>
+              {client.razao!}
             </SelectItem>
           ))}
         </SelectContent>
