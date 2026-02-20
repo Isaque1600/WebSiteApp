@@ -14,6 +14,12 @@ use function in_array;
 use function strlen;
 
 class FileController extends Controller {
+    private array $hiddenFiles = [
+        '.gitignore',
+        'temp',
+        'certificados'
+    ];
+
     public function downloadPublicFile(string $filePath) {
         $filePath = trim(urldecode($filePath));
 
@@ -100,7 +106,7 @@ class FileController extends Controller {
         return response()->json([
             'status' => 'success',
             'data'   => array_map(function ($yearPath) {
-                return basename($yearPath);
+                return !in_array(strtolower(basename($yearPath)), $this->hiddenFiles) ? basename($yearPath) : null;
             }, $years)
         ]);
     }
@@ -169,12 +175,6 @@ class FileController extends Controller {
     // }
 
     private function files(string $year, string $month, array $clients, string $basePath, string $type) {
-        $hiddenFiles = [
-            '.gitignore',
-            'temp',
-            'Certificados'
-        ];
-
         $year  = (strlen($year) === 4 && is_numeric($year)) ? $year : 'all';
         $month = (is_numeric($month) && $month >= 1 && $month <= 12) ? Carbon::createFromFormat('m', $month)->format('m') : 'all';
 
@@ -205,18 +205,18 @@ class FileController extends Controller {
             }
         }
 
-        $files = collect($allFiles)->filter(function ($file) use ($clients, $type, $hiddenFiles) {
+        $files = collect($allFiles)->filter(function ($file) use ($clients, $type) {
             if ($type === 'certificates') {
                 if (!empty($clients) && !collect($clients)->contains(fn ($client) => Str::contains(Str::slug(basename($file)), $client))) {
                     return false;
                 }
-                if (!in_array(Str::lower(basename($file)), $hiddenFiles)) {
+                if (!in_array(Str::lower(basename($file)), $this->hiddenFiles)) {
                     return false;
                 }
                 return true;
             }
 
-            if (in_array(Str::lower(basename($file)), $hiddenFiles)) {
+            if (in_array(Str::lower(basename($file)), $this->hiddenFiles)) {
                 return false;
             }
 
@@ -264,9 +264,9 @@ class FileController extends Controller {
 
         $validClients = Person::where('tipo', '=', 'cliente')
             ->where('contador', '=', $user->login)
-            ->where('nome', 'LIKE', "%$client%")
-            ->orderBy("nome", "asc")
-            ->pluck('nome')
+            ->where('razao', 'LIKE', "%$client%")
+            ->orderBy("razao", "asc")
+            ->pluck('razao')
             ->toArray();
 
         if (!$validClients) {
