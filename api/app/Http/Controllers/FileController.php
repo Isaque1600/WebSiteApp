@@ -169,7 +169,11 @@ class FileController extends Controller {
     // }
 
     private function files(string $year, string $month, array $clients, string $basePath, string $type) {
-        $hiddenFiles = ['.gitignore'];
+        $hiddenFiles = [
+            '.gitignore',
+            'temp',
+            'Certificados'
+        ];
 
         $year  = (strlen($year) === 4 && is_numeric($year)) ? $year : 'all';
         $month = (is_numeric($month) && $month >= 1 && $month <= 12) ? Carbon::createFromFormat('m', $month)->format('m') : 'all';
