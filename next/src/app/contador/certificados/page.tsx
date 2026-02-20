@@ -5,44 +5,31 @@ import { Header } from "@/_components/contador/Header";
 import { Utilities } from "@/_components/contador/Utilities";
 import { Separator } from "@/_components/ui/separator";
 import { useFile } from "@/hooks/Files/useFiles";
-import { useAuth } from "@/hooks/useAuth";
+import { ContadorContext } from "@/providers/ContadorProvider";
 import { Row } from "@tanstack/react-table";
 import { AxiosError } from "axios";
 import { Loader2, SearchX } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Certificados() {
+  const { selectedContadorId } = useContext(ContadorContext);
+
   const [displayDownload, setDisplayDownload] = useState(false);
   const [itensSelected, setItensSelected] = useState([]);
-  const [selectedContadorId, setSelectedContadorId] = useState<number | null>(
-    null,
-  );
 
-  const { me } = useAuth();
-  const { data: user } = me();
   const { getCertificates, downloadFile, downloadMultipleFiles } = useFile();
-
-  // Initialize selectedContadorId based on user type
-  useEffect(() => {
-    if (user) {
-      if (user.type === "contador") {
-        setSelectedContadorId(user.id);
-      }
-    }
-  }, [user]);
 
   const {
     mutateAsync: downloadMultiple,
     isPending: isDownloadingMultiple,
-    isSuccess: isDownloadMultipleSuccess,
     isError: isDownloadMultipleError,
   } = downloadMultipleFiles;
 
   const {
     mutateAsync: download,
-    isSuccess: isDownloadSuccess,
     isError: isDownloadError,
+    isPending: isDownloading,
   } = downloadFile;
 
   const {
@@ -51,10 +38,6 @@ export default function Certificados() {
     isError: isCertificatesError,
     error: certificatesError,
   } = getCertificates(selectedContadorId || 0);
-
-  const handleContadorChange = (contadorId: number | null) => {
-    setSelectedContadorId(contadorId);
-  };
 
   useEffect(() => {
     if (!isDownloadError || !isDownloadMultipleError) {
@@ -65,11 +48,7 @@ export default function Certificados() {
 
   return (
     <>
-      <Header
-        className="w-full justify-between"
-        pageName="Certificados"
-        onContadorChange={handleContadorChange}
-      />
+      <Header className="w-full justify-between" pageName="Certificados" />
       <div className="h-full overflow-hidden rounded-lg bg-neutral-100 shadow-md shadow-neutral-400">
         <Utilities
           downloadBtn={displayDownload}
@@ -113,7 +92,7 @@ export default function Certificados() {
             setDisplayDownload={setDisplayDownload}
             setItensSelected={setItensSelected}
             onFilenameClick={(value: Files) => {
-              download(value.url);
+              if (!isDownloading) download(value.url);
             }}
           />
         )}

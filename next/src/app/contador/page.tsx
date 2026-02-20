@@ -6,48 +6,27 @@ import { TableParameters } from "@/_components/contador/TableParameters";
 import { Utilities } from "@/_components/contador/Utilities";
 import { Separator } from "@/_components/ui/separator";
 import { useFile } from "@/hooks/Files/useFiles";
-import { useAuth } from "@/hooks/useAuth";
+import { ContadorContext } from "@/providers/ContadorProvider";
 import { Row } from "@tanstack/react-table";
 import { AxiosError } from "axios";
 import { Loader2, SearchX } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 export default function Cliente() {
+  const { selectedContadorId } = useContext(ContadorContext);
+
   const [displayDownload, setDisplayDownload] = useState(false);
   const [itensSelected, setItensSelected] = useState([]);
   const [year, setYear] = useState("all");
   const [month, setMonth] = useState("all");
   const [name, setName] = useState("null");
-  const [selectedContadorId, setSelectedContadorId] = useState<number | null>(
-    null,
-  );
 
-  const { me } = useAuth();
-  const { data: user } = me();
   const { getArchives, downloadFile, downloadMultipleFiles } = useFile();
 
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
+  const { mutateAsync: downloadMultiple, isPending: isDownloadingMultiple } =
+    downloadMultipleFiles;
 
-    if (user.type === "contador") {
-      setSelectedContadorId(user.id);
-    }
-  }, [user]);
-
-  const {
-    mutateAsync: downloadMultiple,
-    isPending: isDownloadingMultiple,
-    isSuccess: isDownloadMultipleSuccess,
-    isError: isDownloadMultipleError,
-  } = downloadMultipleFiles;
-
-  const {
-    mutateAsync: download,
-    isSuccess: isDownloadSuccess,
-    isError: isDownloadError,
-  } = downloadFile;
+  const { mutateAsync: download, isPending: isDownloading } = downloadFile;
 
   const {
     data: archives,
@@ -61,21 +40,13 @@ export default function Cliente() {
     userId: selectedContadorId || 0,
   });
 
-  const handleContadorChange = (contadorId: number | null) => {
-    setSelectedContadorId(contadorId);
-  };
-
   return (
     <>
-      <Header
-        className="w-full justify-between"
-        onContadorChange={handleContadorChange}
-      >
+      <Header className="w-full justify-between">
         <TableParameters
           setMonth={setMonth}
           setYear={setYear}
           setName={setName}
-          selectedContadorId={selectedContadorId}
         />
       </Header>
       <div className="h-full overflow-hidden rounded-lg bg-neutral-100 shadow-md shadow-neutral-400">
@@ -122,7 +93,9 @@ export default function Cliente() {
             setDisplayDownload={setDisplayDownload}
             setItensSelected={setItensSelected}
             onFilenameClick={(value: Files) => {
-              download(value.url);
+              if (!isDownloading) {
+                download(value.url);
+              }
             }}
           />
         )}

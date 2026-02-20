@@ -198,11 +198,13 @@ export const useFile = () => {
 
   const downloadFile = useMutation({
     mutationFn: (path: string) => download(path),
-    onError: () => {
+    onError: (_, path) => {
       toast.error("Erro ao baixar arquivo.", { id: "download-error" });
+      toast.dismiss(`downloading-${path}`);
     },
-    onSuccess: () => {
+    onSuccess: (_, path) => {
       toast.success("Download iniciado!", { id: "download-success" });
+      toast.dismiss(`downloading-${path}`);
     },
   });
 

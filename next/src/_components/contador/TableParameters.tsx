@@ -2,9 +2,10 @@
 
 import { useFile } from "@/hooks/Files/useFiles";
 import { usePerson } from "@/hooks/Person/usePerson";
+import { ContadorContext } from "@/providers/ContadorProvider";
 import { Person } from "@/types/Person";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Select,
@@ -19,15 +20,15 @@ type TableParametersProps = {
   setYear: (year: string) => void;
   setMonth: (month: string) => void;
   setName: (name: string) => void;
-  selectedContadorId?: number | null;
 };
 
 export function TableParameters({
   setYear,
   setMonth,
   setName,
-  selectedContadorId,
 }: TableParametersProps) {
+  const { selectedContadorId } = useContext(ContadorContext);
+
   const { getYears } = useFile();
   const { getClients } = usePerson();
   const {
@@ -124,9 +125,22 @@ export function TableParameters({
           ))}
         </SelectContent>
       </Select>
-      <Select defaultValue="null" onValueChange={setName}>
-        <SelectTrigger className="w-fit min-w-96 space-x-2 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner">
-          <SelectValue placeholder="Todos" />
+      <Select
+        defaultValue="null"
+        onValueChange={setName}
+        disabled={clients.data.length === 0}
+      >
+        <SelectTrigger
+          className="w-fit min-w-96 space-x-2 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner"
+          disabled={clients.data.length === 0}
+        >
+          <SelectValue
+            placeholder={
+              clients.data.length === 0
+                ? "Nenhum cliente disponível"
+                : "Selecione um cliente"
+            }
+          />
         </SelectTrigger>
         <SelectContent className="capitalize">
           <SelectItem value="null">Todos</SelectItem>

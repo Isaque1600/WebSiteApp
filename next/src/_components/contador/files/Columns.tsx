@@ -4,6 +4,7 @@ import { Separator } from "@/_components/ui/separator";
 import { CaretDownIcon, CaretUpIcon } from "@radix-ui/react-icons";
 import { ColumnDef } from "@tanstack/react-table";
 import { File } from "lucide-react";
+import { toast } from "sonner";
 
 export type Files = {
   filename: string;
@@ -81,6 +82,9 @@ export const columns: ColumnDef<Files>[] = [
               onFilenameClick?: (row: Files) => void;
             };
             meta?.onFilenameClick?.(row.original);
+            toast.info("Iniciando download...", {
+              id: `downloading-${row.original.url}`,
+            });
           }}
         >
           <File className="!size-6" />

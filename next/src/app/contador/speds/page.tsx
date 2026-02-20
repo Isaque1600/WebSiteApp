@@ -6,48 +6,34 @@ import { TableParameters } from "@/_components/contador/TableParameters";
 import { Utilities } from "@/_components/contador/Utilities";
 import { Separator } from "@/_components/ui/separator";
 import { useFile } from "@/hooks/Files/useFiles";
-import { useAuth } from "@/hooks/useAuth";
+import { ContadorContext } from "@/providers/ContadorProvider";
 import { Row } from "@tanstack/react-table";
 import { AxiosError } from "axios";
 import { Loader2, SearchX } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Speds() {
+  const { selectedContadorId } = useContext(ContadorContext);
+
   const [displayDownload, setDisplayDownload] = useState(false);
   const [itensSelected, setItensSelected] = useState([]);
   const [year, setYear] = useState("all");
   const [month, setMonth] = useState("all");
   const [name, setName] = useState("null");
-  const [selectedContadorId, setSelectedContadorId] = useState<number | null>(
-    null,
-  );
 
   const { getSpeds, downloadFile, downloadMultipleFiles } = useFile();
-  const { me } = useAuth();
-  const { data: user } = me();
-
-  // Initialize selectedContadorId based on user type
-  useEffect(() => {
-    if (user) {
-      if (user.type === "contador") {
-        setSelectedContadorId(user.id);
-      }
-      // For admin, let ContadorSelect handle the initial selection
-    }
-  }, [user]);
 
   const {
     mutateAsync: downloadMultiple,
     isPending: isDownloadingMultiple,
-    isSuccess: isDownloadMultipleSuccess,
     isError: isDownloadMultipleError,
   } = downloadMultipleFiles;
 
   const {
     mutateAsync: download,
-    isSuccess: isDownloadSuccess,
     isError: isDownloadError,
+    isPending: isDownloading,
   } = downloadFile;
 
   const {
@@ -59,12 +45,8 @@ export default function Speds() {
     year: year,
     month: month,
     client: name,
-    userId: user?.id || 0,
+    userId: selectedContadorId || 0,
   });
-
-  const handleContadorChange = (contadorId: number | null) => {
-    setSelectedContadorId(contadorId);
-  };
 
   useEffect(() => {
     if (isDownloadError || isDownloadMultipleError) {
@@ -74,16 +56,11 @@ export default function Speds() {
 
   return (
     <>
-      <Header
-        className="w-full justify-between"
-        pageName="SPEDS"
-        onContadorChange={handleContadorChange}
-      >
+      <Header className="w-full justify-between" pageName="SPEDS">
         <TableParameters
           setMonth={setMonth}
           setYear={setYear}
           setName={setName}
-          selectedContadorId={selectedContadorId}
         />
       </Header>
       <div className="h-full overflow-hidden rounded-lg bg-neutral-100 shadow-md shadow-neutral-400">
@@ -129,7 +106,7 @@ export default function Speds() {
             setDisplayDownload={setDisplayDownload}
             setItensSelected={setItensSelected}
             onFilenameClick={(value: Files) => {
-              download(value.url);
+              if (!isDownloading) download(value.url);
             }}
           />
         )}

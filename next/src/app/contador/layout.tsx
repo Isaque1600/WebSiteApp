@@ -1,6 +1,7 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
 import AccountantLayout from "@/layouts/AccountantLayout";
+import { ContadorProvider } from "@/providers/ContadorProvider";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -31,5 +32,9 @@ export default function ContadorLayout({ children }: ContadorLayoutProps) {
     router.push("/");
   }
 
-  return <AccountantLayout>{children}</AccountantLayout>;
+  return (
+    <AccountantLayout>
+      <ContadorProvider>{children}</ContadorProvider>
+    </AccountantLayout>
+  );
 }
