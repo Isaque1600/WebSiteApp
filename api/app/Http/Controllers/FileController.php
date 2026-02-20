@@ -7,17 +7,15 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Log;
 use Storage;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 use function in_array;
+use function strlen;
 
 class FileController extends Controller {
     public function downloadPublicFile(string $filePath) {
         $filePath = trim(urldecode($filePath));
-
-        Log::debug(Storage::disk('public')->exists($filePath) == true ? 'ok' : 'not found');
 
         if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[\p{L}0-9_\-\/\ .]+$/u', $filePath) || in_array(basename($filePath), ['.gitignore'])) {
             return response()->json(['error' => 'Invalid file path'], 400);
@@ -32,8 +30,6 @@ class FileController extends Controller {
 
     public function downloadPrivateFile(string $filePath) {
         $baseName = basename(urldecode($filePath));
-
-        Log::debug("Requested file download: $filePath");
 
         if (empty($filePath) || str_contains($filePath, '..') || !preg_match('/^[\p{L}0-9_\-\/\ .]+$/u', $filePath) || in_array($baseName, ['.gitignore'])) {
             return response()->json(['error' => 'Invalid file path'], 400);
@@ -175,27 +171,44 @@ class FileController extends Controller {
     private function files(string $year, string $month, array $clients, string $basePath, string $type) {
         $hiddenFiles = ['.gitignore'];
 
-        $year  = $year ?: date('Y');
-        $month = $month ?: date('m');
+        $year  = (strlen($year) === 4 && is_numeric($year)) ? $year : 'all';
+        $month = (is_numeric($month) && $month >= 1 && $month <= 12) ? Carbon::createFromFormat('m', $month)->format('m') : 'all';
 
-        if ($year != 'all') {
-            $basePath .= "$year/";
+        $allFiles = [];
+
+        if ($year === 'all') {
+            $yearDirs = Storage::directories($basePath);
+        } else {
+            $targetYearDir = "$basePath/$year";
+            $yearDirs      = Storage::exists($targetYearDir) ? [$targetYearDir] : [];
         }
 
-        if ($month != 'all') {
-            $basePath .= "$month/";
+        foreach ($yearDirs as $yearDir) {
+            if ($month === 'all') {
+                $monthDirs = Storage::directories($yearDir);
+            } else {
+                $currentYear    = basename($yearDir);
+                $targetMonthDir = "$yearDir/$month-$currentYear";
+                $monthDirs      = Storage::exists($targetMonthDir) ? [$targetMonthDir] : [];
+            }
+
+            foreach ($monthDirs as $monthDir) {
+                $filesInMonth = Storage::files($monthDir, true);
+                $allFiles     = [
+                    ...$allFiles,
+                    ...$filesInMonth
+                ];
+            }
         }
 
-        $files = collect(Storage::files("$basePath/", true))->filter(function ($file) use ($clients, $type, $hiddenFiles) {
+        $files = collect($allFiles)->filter(function ($file) use ($clients, $type, $hiddenFiles) {
             if ($type === 'certificates') {
                 if (!empty($clients) && !collect($clients)->contains(fn ($client) => Str::contains(Str::slug(basename($file)), $client))) {
                     return false;
                 }
-
                 if (!in_array(Str::lower(basename($file)), $hiddenFiles)) {
                     return false;
                 }
-
                 return true;
             }
 
@@ -216,7 +229,12 @@ class FileController extends Controller {
             ->values()
             ->all();
 
-        return array_map(function ($file) use ($year, $month, $basePath, $type) {
+        return array_map(function ($file) use ($type) {
+            $pathParts       = explode('/', str_replace('archives/', '', $file));
+            $fileYear        = $pathParts[0] ?? 'unknown';
+            $monthYearFolder = $pathParts[1] ?? 'unknown';
+            $fileMonth       = substr($monthYearFolder, 0, 2);
+
             if ($type === 'certificates') {
                 return [
                     'filename'     => basename($file),
@@ -228,8 +246,8 @@ class FileController extends Controller {
 
             return [
                 'filename'     => basename($file),
-                'year'         => $year == 'all' ? explode('/', str_replace('archives/', '', $file))[0] : $year,
-                'month'        => $month == 'all' ? explode('/', str_replace($basePath, '', $file))[1] : $month,
+                'year'         => $fileYear,
+                'month'        => $fileMonth,
                 'size'         => round(Storage::size($file) / 1024, 2),
                 'lastModified' => Carbon::createFromTimestamp(Storage::lastModified($file), 'America/Recife')->toDateTimeString(),
                 'url'          => str_replace('archives/', '', $file)

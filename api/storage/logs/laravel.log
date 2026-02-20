@@ -1,0 +1,10 @@
+[2026-02-20 23:07:57] local.DEBUG: yearDirs: ["archives\/2025"]  
+[2026-02-20 23:07:57] local.DEBUG: Checking month 02 for year 2025 in directory archives/2025  
+[2026-02-20 23:07:57] local.DEBUG: Looking for month directory: archives/2025/02-2025  
+[2026-02-20 23:07:57] local.DEBUG: monthDirs for year archives/2025: []  
+[2026-02-20 23:07:57] local.DEBUG: files: []  
+[2026-02-20 23:07:59] local.DEBUG: yearDirs: ["archives\/2025"]  
+[2026-02-20 23:07:59] local.DEBUG: Checking month 01 for year 2025 in directory archives/2025  
+[2026-02-20 23:07:59] local.DEBUG: Looking for month directory: archives/2025/01-2025  
+[2026-02-20 23:07:59] local.DEBUG: monthDirs for year archives/2025: ["archives\/2025\/01-2025"]  
+[2026-02-20 23:07:59] local.DEBUG: files: ["archives\/2025\/01-2025\/Arquivos Fiscais 01-2025 BRENNO SUEL NOBREGA.rar","archives\/2025\/01-2025\/Arquivos Fiscais 01-2025 bruno.ortiz.rar","archives\/2025\/01-2025\/Arquivos Fiscais 01-2025 \u00fachoa.silvana.rar","archives\/2025\/01-2025\/test.txt"]  
