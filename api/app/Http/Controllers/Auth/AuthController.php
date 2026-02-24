@@ -7,13 +7,11 @@ use App\Models\User;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
-class AuthController extends Controller implements HasMiddleware
-{
+class AuthController extends Controller implements HasMiddleware {
     /**
      * Get the middleware that should be assigned to the controller.
      */
-    public static function middleware(): array
-    {
+    public static function middleware(): array {
         return [
             new Middleware(middleware: 'auth:api', except: ['login']),
         ];
@@ -24,9 +22,11 @@ class AuthController extends Controller implements HasMiddleware
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
-    {
-        $credentials = request(['login', 'senha']);
+    public function login() {
+        $credentials = request([
+            'login',
+            'senha'
+        ]);
 
         $user = User::where('login', $credentials['login'])->first();
 
@@ -35,7 +35,7 @@ class AuthController extends Controller implements HasMiddleware
         }
 
         if (!$user->validatePassword($credentials['senha'])) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Invalid login or password'], 401);
         }
 
         $token = auth()?->login($user);
@@ -48,10 +48,13 @@ class AuthController extends Controller implements HasMiddleware
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function me()
-    {
+    public function me() {
         $user = auth()->user();
-        return response()->json(["id" => $user->id, "login" => $user->login, "type" => $user->type]);
+        return response()->json([
+            "id"    => $user->id,
+            "login" => $user->login,
+            "type"  => $user->type
+        ]);
     }
 
     /**
@@ -59,8 +62,7 @@ class AuthController extends Controller implements HasMiddleware
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
-    {
+    public function logout() {
         auth()->logout();
 
         return response()->json(['message' => 'Usuário deslogado com sucesso']);
@@ -71,8 +73,7 @@ class AuthController extends Controller implements HasMiddleware
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
-    {
+    public function refresh() {
         return $this->respondWithToken(auth()->refresh());
     }
 
@@ -83,12 +84,12 @@ class AuthController extends Controller implements HasMiddleware
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
-    {
+    protected function respondWithToken($token) {
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()
+                ->getTTL() * 60
         ]);
     }
 }
