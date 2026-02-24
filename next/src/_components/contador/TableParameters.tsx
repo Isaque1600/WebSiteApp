@@ -38,6 +38,7 @@ export function TableParameters({
     error: clientsError,
   } = getClients({
     userId: selectedContadorId ? `${selectedContadorId}` : "0",
+    search_by: "razao",
   });
 
   const {
@@ -69,6 +70,18 @@ export function TableParameters({
     toast.error("Erro ao carregar anos.");
   }, [isYearsError, yearsError]);
 
+  const now = new Date();
+  const previousDate = new Date(
+    now.getFullYear(),
+    now.getMonth() - 1,
+    now.getDate(),
+  );
+
+  console.log(
+    previousDate.getMonth().toString(),
+    previousDate.getFullYear().toString(),
+  );
+
   if (isClientsError || isYearsError) {
     if (clientsError instanceof AxiosError) {
       if (clientsError.response?.status === 404) {
@@ -99,7 +112,10 @@ export function TableParameters({
 
   return (
     <div className="flex flex-row items-center justify-center gap-2">
-      <Select defaultValue="all" onValueChange={setMonth}>
+      <Select
+        defaultValue={(previousDate.getMonth() + 1).toString()}
+        onValueChange={setMonth}
+      >
         <SelectTrigger className="w-36 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner">
           <SelectValue placeholder="Todos" />
         </SelectTrigger>
@@ -112,17 +128,24 @@ export function TableParameters({
           ))}
         </SelectContent>
       </Select>
-      <Select defaultValue="all" onValueChange={setYear}>
+      <Select
+        defaultValue={previousDate.getFullYear().toString() || "all"}
+        onValueChange={setYear}
+      >
         <SelectTrigger className="w-36 rounded-none rounded-t-md border-0 border-b-2 border-gray-800 text-lg capitalize shadow-none outline-none hover:bg-zinc-200 hover:shadow-inner">
           <SelectValue placeholder="Todos" />
         </SelectTrigger>
         <SelectContent className="capitalize">
           <SelectItem value="all">Todos</SelectItem>
-          {years.data.map((year: string, i: number) => (
-            <SelectItem key={i} value={year}>
-              {year}
-            </SelectItem>
-          ))}
+          {years.data.map((year: string, i: number) => {
+            if (!year) return;
+
+            return (
+              <SelectItem key={i} value={year}>
+                {year}
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
       <Select

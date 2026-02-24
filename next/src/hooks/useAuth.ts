@@ -34,6 +34,10 @@ async function loginReq(email: string, password: string): Promise<boolean> {
             error.message = "Usuário não encontrado";
             throw error;
 
+          case "Invalid login or password":
+            error.message = "Login ou senha inválidos";
+            throw error;
+
           default:
             error.message = "Erro ao fazer login";
             throw error;
