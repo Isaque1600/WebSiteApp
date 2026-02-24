@@ -77,10 +77,17 @@ export function TableParameters({
     now.getDate(),
   );
 
-  console.log(
-    previousDate.getMonth().toString(),
-    previousDate.getFullYear().toString(),
-  );
+  setMonth((previousDate.getMonth() + 1).toString());
+  if (!isYearsLoading) {
+    setYear(
+      years.data &&
+        (years.data as Array<string>).includes(
+          previousDate.getFullYear().toString(),
+        )
+        ? previousDate.getFullYear().toString()
+        : "all",
+    );
+  }
 
   if (isClientsError || isYearsError) {
     if (clientsError instanceof AxiosError) {
