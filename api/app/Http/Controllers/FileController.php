@@ -103,11 +103,15 @@ class FileController extends Controller {
     public function availableYears() {
         $years = Storage::directories('archives');
 
+        $filteredYears = array_filter(array_map(function ($yearPath) {
+            return !in_array(strtolower(basename($yearPath)), $this->hiddenFiles) ? basename($yearPath) : false;
+        }, $years));
+
+        sort($filteredYears);
+
         return response()->json([
             'status' => 'success',
-            'data'   => array_map(function ($yearPath) {
-                return !in_array(strtolower(basename($yearPath)), $this->hiddenFiles) ? basename($yearPath) : null;
-            }, $years)
+            'data'   => array_values($filteredYears)
         ]);
     }
 
