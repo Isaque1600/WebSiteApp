@@ -1,0 +1,151 @@
+{
+  "sections": [
+    {
+      "title": "GDoor",
+      "buttons": [
+        {
+          "label": "Gdoor PRO",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_PACK.exe"
+        },
+        {
+          "label": "Gdoor MEI",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Testando um texto muito grande para ver como fica o layout do botão",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        }
+      ]
+    },
+    {
+      "title": "Links uteis",
+      "buttons": [
+        {
+          "label": "Gdoor PRO",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_PACK.exe"
+        },
+        {
+          "label": "Gdoor MEI",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        }
+      ]
+    },
+    {
+      "title": "GDoor",
+      "buttons": [
+        {
+          "label": "Gdoor PRO",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_PACK.exe"
+        },
+        {
+          "label": "Gdoor MEI",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        }
+      ]
+    },
+    {
+      "title": "GDoor",
+      "buttons": [
+        {
+          "label": "Gdoor PRO",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_PACK.exe"
+        },
+        {
+          "label": "Gdoor MEI",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        }
+      ]
+    },
+    {
+      "title": "GDoor",
+      "buttons": [
+        {
+          "label": "Gdoor PRO",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_PACK.exe"
+        },
+        {
+          "label": "Gdoor MEI",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        }
+      ]
+    },
+    {
+      "title": "GDoor",
+      "buttons": [
+        {
+          "label": "Gdoor PRO",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_PACK.exe"
+        },
+        {
+          "label": "Gdoor MEI",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        }
+      ]
+    },
+    {
+      "title": "GDoor",
+      "buttons": [
+        {
+          "label": "Gdoor PRO",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_PACK.exe"
+        },
+        {
+          "label": "Gdoor MEI",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        },
+        {
+          "label": "Gdoor SLIM",
+          "href": "https://downloads.gdoor.com.br/api/pack/GDOORPRO_Instalacao_Completa.exe"
+        }
+      ]
+    }
+  ]
+}

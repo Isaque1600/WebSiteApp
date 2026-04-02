@@ -19,7 +19,7 @@ export function NavBar() {
         login
       </NavLink>
       <NavLink thisPage={location === "/gdoor"} href="/gdoor">
-        gdoor
+        Utilitários
       </NavLink>
       <MusicPlayer />
     </nav>
